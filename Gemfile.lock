@@ -386,24 +386,27 @@ DEPENDENCIES
   brakeman
   bundler-audit
   debug
-  image_processing (~> 1.2)
+  image_processing
   importmap-rails
   jbuilder
   kamal
   propshaft
-  puma (>= 5.0)
+  puma
   rails (~> 8.1.2)
   rubocop-rails-omakase
   solid_cable
   solid_cache
   solid_queue
-  sqlite3 (>= 2.1)
+  sqlite3
   stimulus-rails
   tailwindcss-rails
   thruster
   turbo-rails
   tzinfo-data
   web-console
+
+RUBY VERSION
+   ruby 4.0.0p0
 
 BUNDLED WITH
    2.5.7
