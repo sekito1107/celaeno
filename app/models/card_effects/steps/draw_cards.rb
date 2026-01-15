@@ -25,7 +25,7 @@ module CardEffects
           end
 
           if cards.size < count
-            game_player.game.check_deck_death!(game_player)
+            game_player.game.finish_deck_death!(game_player)
           end
 
           context.log_effect(:effect_draw, {

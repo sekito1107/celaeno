@@ -54,9 +54,8 @@ class Game < ApplicationRecord
     end
   end
 
-  def check_deck_death!(player)
+  def finish_deck_death!(player)
     return if finished?
-    return unless player.deck.empty?
 
     player.log_event!(:deck_empty, {})
     finish_game!(player, FINISH_REASONS[:deck_death])
