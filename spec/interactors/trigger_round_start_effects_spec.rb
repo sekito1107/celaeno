@@ -40,10 +40,11 @@ RSpec.describe TriggerRoundStartEffects do
 
     it '墓地のカードに対して効果が呼ばれないこと' do
       allow(board_unit).to receive(:trigger)
+      allow(graveyard_card).to receive(:trigger)
 
       described_class.call(game: game)
 
-      expect(board_unit).to have_received(:trigger).with(:on_round_start)
+      expect(graveyard_card).not_to have_received(:trigger)
     end
   end
 
