@@ -49,24 +49,33 @@ class ResolveDamage
   def apply_all_damage(damage_results)
     damage_results.each do |result|
       break if context.game.reload.finished?
+      apply_single_attack(result)
+    end
+  end
 
-      attacker = result[:attacker]
-      target = result[:target]
-      damage = result[:damage]
-      target_type = result[:target_type]
+  def apply_single_attack(result)
+    attacker = result[:attacker]
+    target = result[:target]
+    damage = result[:damage]
+    target_type = result[:target_type]
 
-      target_info = target_type == :player ?
-        { target_type: "player", target_player_id: target.id } :
-        { target_type: "unit", target_card_id: target.id, target_card_name: target.card.name }
+    target_info = build_target_info(target, target_type)
 
-      attacker.log_event!(:attack, {
-        attacker_id: attacker.id,
-        attacker_name: attacker.card.name,
-        damage: damage
-      }.merge(target_info))
+    attacker.log_event!(:attack, {
+      attacker_id: attacker.id,
+      attacker_name: attacker.card.name,
+      damage: damage
+    }.merge(target_info))
 
-      target.take_damage!(damage)
-      context.game.check_player_death!(target) if target.is_a?(GamePlayer)
+    target.take_damage!(damage)
+    context.game.check_player_death!(target) if target.is_a?(GamePlayer)
+  end
+
+  def build_target_info(target, target_type)
+    if target_type == :player
+      { target_type: "player", target_player_id: target.id }
+    else
+      { target_type: "unit", target_card_id: target.id, target_card_name: target.card.name }
     end
   end
 end
