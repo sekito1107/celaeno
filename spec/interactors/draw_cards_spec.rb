@@ -46,6 +46,28 @@ RSpec.describe DrawCards, type: :interactor do
       end
     end
 
+    context 'デッキが残り1枚の場合' do
+      before do
+        # プレイヤー1のデッキ(1枚)
+        create(:game_card, game: game, user: user, game_player: player,
+               card: unit_card, location: :deck, position_in_stack: 0)
+        # プレイヤー2のデッキ(1枚)
+        create(:game_card, game: game, user: opponent_user, game_player: opponent,
+               card: unit_card, location: :deck, position_in_stack: 0)
+      end
+
+      it '最後の1枚を引いてもゲームは終了しない' do
+        described_class.call(game: game)
+
+        game.reload
+        expect(game).not_to be_finished
+        expect(player.hand.count).to eq 1
+        expect(opponent.hand.count).to eq 1
+        expect(player.deck.count).to eq 0
+        expect(opponent.deck.count).to eq 0
+      end
+    end
+
     context 'デッキが空のプレイヤーがいる場合' do
       before do
         # プレイヤー2だけデッキがある

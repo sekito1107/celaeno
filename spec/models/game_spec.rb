@@ -107,18 +107,17 @@ RSpec.describe Game, type: :model do
     end
   end
 
-  describe '#check_deck_death!' do
+  describe '#finish_deck_death!' do
     let(:game) { create(:game, status: :playing) }
     let!(:turn) { create(:turn, game: game, turn_number: 1) }
     let(:user) { create(:user) }
     let!(:player) { create(:game_player, game: game, user: user) }
     let!(:opponent) { create(:game_player, game: game) }
-    let(:card) { create(:card) }
 
-    context 'デッキが空の場合' do
+    context 'ゲームが終了していない場合' do
       it 'DECK_DEATHでゲームが終了する' do
         expect {
-          game.check_deck_death!(player)
+          game.finish_deck_death!(player)
         }.to change(BattleLog, :count).by(2) # deck_empty + game_finish
 
         expect(game.reload).to be_finished
@@ -127,23 +126,11 @@ RSpec.describe Game, type: :model do
       end
     end
 
-    context 'デッキにカードがある場合' do
-      before do
-        create(:game_card, game: game, game_player: player, user: user, card: card, location: :deck)
-      end
-
-      it 'ゲームは終了しない' do
-        game.check_deck_death!(player)
-
-        expect(game.reload).not_to be_finished
-      end
-    end
-
     context 'ゲームが既に終了している場合' do
       before { game.update!(status: :finished) }
 
       it '何も起こらない' do
-        expect { game.check_deck_death!(player) }.not_to change { game.reload.attributes }
+        expect { game.finish_deck_death!(player) }.not_to change { game.reload.attributes }
       end
     end
   end
