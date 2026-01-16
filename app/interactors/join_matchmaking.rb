@@ -35,7 +35,7 @@ class JoinMatchmaking
 
     # ゲーム作成 (seedはcallbackで設定される)
     game = Game.create!(status: :playing)
-    
+
     # プレイヤー作成
     GamePlayer.create!(game: game, user: user, role: :host, deck_type: deck_type)
     GamePlayer.create!(game: game, user: opponent, role: :guest, deck_type: opponent_queue.deck_type)
