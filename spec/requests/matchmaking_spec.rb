@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Matchmaking", type: :request do
-  describe "POST /matchmaking" do
+  describe "POST /matchmaking (参加)" do
     let(:user) { create(:user, selected_deck: "cthulhu") }
 
     before do
@@ -9,8 +9,8 @@ RSpec.describe "Matchmaking", type: :request do
       post session_path, params: { email_address: user.email_address, password: user.password }
     end
 
-    context "when opponent is not found" do
-      it "redirects to the waiting screen" do
+    context "対戦相手が見つからない場合" do
+      it "待機画面にリダイレクトすること" do
         expect {
           post matchmaking_path
         }.to change(MatchmakingQueue, :count).by(1)
@@ -19,11 +19,11 @@ RSpec.describe "Matchmaking", type: :request do
       end
     end
 
-    context "when opponent is found" do
+    context "対戦相手が見つかった場合" do
       let(:opponent) { create(:user) }
       let!(:opponent_queue) { create(:matchmaking_queue, user: opponent, deck_type: "hastur") }
 
-      it "redirects to the game screen" do
+      it "ゲーム画面にリダイレクトすること" do
         expect {
           post matchmaking_path
         }.to change(Game, :count).by(1)
@@ -34,21 +34,21 @@ RSpec.describe "Matchmaking", type: :request do
     end
   end
 
-  describe "GET /matchmaking" do
+  describe "GET /matchmaking (待機画面)" do
     let(:user) { create(:user) }
 
     before do
       post session_path, params: { email_address: user.email_address, password: user.password }
     end
 
-    it "renders the waiting screen" do
+    it "待機画面を表示すること" do
       get matchmaking_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("対戦相手を探しています")
     end
   end
 
-  describe "DELETE /matchmaking" do
+  describe "DELETE /matchmaking (キャンセル)" do
     let(:user) { create(:user) }
 
     before do
@@ -56,7 +56,7 @@ RSpec.describe "Matchmaking", type: :request do
       user.join_matchmaking!("cthulhu")
     end
 
-    it "removes the user from the queue and redirects to lobby" do
+    it "キューからユーザーを削除し、ロビーにリダイレクトすること" do
       expect {
         delete matchmaking_path
       }.to change(MatchmakingQueue, :count).by(-1)
