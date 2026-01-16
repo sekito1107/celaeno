@@ -16,7 +16,9 @@ Rails.application.routes.draw do
   root "home#index"
   resource :lobby, only: [ :show ], controller: :lobby
   resource :matchmaking, only: %i[create show destroy], controller: :matchmaking
-  resources :games, only: %i[show]
+  resources :games, only: %i[show] do
+    resource :surrender, only: %i[create]
+  end
 
   namespace :api do
     resource :deck, only: [ :update ]
