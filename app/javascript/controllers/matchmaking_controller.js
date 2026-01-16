@@ -9,6 +9,7 @@ export default class extends Controller {
   static targets = ["searchingState", "matchedState"]
 
   connect() {
+    this.matched = false
     this.consumer = createConsumer()
     this.channel = this.consumer.subscriptions.create(
       { channel: "MatchmakingChannel" },
@@ -19,13 +20,15 @@ export default class extends Controller {
   disconnect() {
     this.channel?.unsubscribe()
     this.consumer?.disconnect()
+    if (this.redirectTimeoutId) clearTimeout(this.redirectTimeoutId)
   }
 
   handleMessage(data) {
-    if (data.action === "matched") {
+    if (data.action === "matched" && !this.matched) {
+      this.matched = true
       this.triggerEncounterAnimation()
       
-      setTimeout(() => {
+      this.redirectTimeoutId = setTimeout(() => {
         // Turboが利用可能な場合はTurbo.visitを使用、そうでなければ通常の遷移
         if (window.Turbo) {
           window.Turbo.visit(`/games/${data.game_id}`)
