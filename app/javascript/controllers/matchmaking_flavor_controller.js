@@ -37,6 +37,7 @@ export default class extends Controller {
 
   disconnect() {
     if (this.timer) clearInterval(this.timer)
+    if (this.fadeTimeout) clearTimeout(this.fadeTimeout)
   }
 
   startRotation() {
@@ -49,7 +50,9 @@ export default class extends Controller {
     // Fade out
     this.textTarget.style.opacity = 0
     
-    setTimeout(() => {
+    this.fadeTimeout = setTimeout(() => {
+      if (!this.element.isConnected) return
+
       // Pick random next quote instead of sequential to keep it fresh
       let nextIndex
       do {
