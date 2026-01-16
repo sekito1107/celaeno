@@ -1,0 +1,24 @@
+<div class="game_mode_card">
+  <div class="game_mode_card__image-wrapper">
+    <%= image_tag image_path, class: "game_mode_card__image", alt: title %>
+    <div class="game_mode_card__gradient-overlay"></div>
+  </div>
+  
+  <div class="game_mode_card__overlay-content">
+    <div class="game_mode_card__badge-container">
+      <div class="game_mode_card__badge"><%= badge %></div>
+    </div>
+
+    <div class="game_mode_card__text-content">
+      <h2 class="game_mode_card__title"><%= title %></h2>
+      <p class="game_mode_card__description"><%= description %></p>
+    </div>
+    
+    <div class="game_mode_card__action-container">
+      <button class="game_mode_card__action-button" type="button">
+        <span class="game_mode_card__action-icon">⬟</span>
+        <%= action_text %>
+      </button>
+    </div>
+  </div>
+</div>
