@@ -21,7 +21,7 @@
     <div class="form-group">
       <%= form.label :name, "Codename" %>
       <div class="input-wrapper">
-        <span class="input-icon">👤</span>
+        <span class="input-icon" aria-hidden="true">👤</span>
         <%= form.text_field :name,
                             required: true,
                             autofocus: true,
@@ -33,7 +33,7 @@
     <div class="form-group">
       <%= form.label :email_address, "Identifier" %>
       <div class="input-wrapper">
-        <span class="input-icon">📧</span>
+        <span class="input-icon" aria-hidden="true">📧</span>
         <%= form.email_field :email_address,
                              required: true,
                              autocomplete: "email",
@@ -44,7 +44,7 @@
     <div class="form-group">
       <%= form.label :password, "Passphrase" %>
       <div class="input-wrapper">
-        <span class="input-icon">🔑</span>
+        <span class="input-icon" aria-hidden="true">🔑</span>
         <%= form.password_field :password,
                                 required: true,
                                 autocomplete: "new-password",
@@ -56,7 +56,7 @@
     <div class="form-group">
       <%= form.label :password_confirmation, "Confirm Passphrase" %>
       <div class="input-wrapper">
-        <span class="input-icon">🔑</span>
+        <span class="input-icon" aria-hidden="true">🔑</span>
         <%= form.password_field :password_confirmation,
                                 required: true,
                                 autocomplete: "new-password",

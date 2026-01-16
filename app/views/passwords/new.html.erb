@@ -12,7 +12,7 @@
     <div class="form-group">
       <%= form.label :email_address, "Identifier" %>
       <div class="input-wrapper">
-        <span class="input-icon">👤</span>
+        <span class="input-icon" aria-hidden="true">👤</span>
         <%= form.email_field :email_address,
                              required: true,
                              autofocus: true,
