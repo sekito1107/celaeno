@@ -5,8 +5,11 @@ class JoinMatchmaking
     user = context.user
     deck_type = context.deck_type
 
-    if user.games.where(status: [ :matching, :playing ]).exists?
-      context.fail!(error: "User is already in an active game")
+    active_game = user.games.find_by(status: [ :matching, :playing ])
+    if active_game
+      user.matchmaking_queue&.destroy!
+      context.game = active_game
+      return
     end
 
     ActiveRecord::Base.transaction do
@@ -21,6 +24,10 @@ class JoinMatchmaking
       else
         handle_no_match(user, deck_type)
       end
+    end
+
+    if context.broadcast_target && context.game
+      MatchmakingChannel.broadcast_to(context.broadcast_target, action: "matched", game_id: context.game.id)
     end
   end
 
@@ -46,6 +53,9 @@ class JoinMatchmaking
 
     # ゲーム開始処理
     StartGame.call!(game: game)
+
+    # 対戦相手に通知 (Transaction後に実行するためコンテキストに保存)
+    context.broadcast_target = opponent
 
     context.game = game
   end
