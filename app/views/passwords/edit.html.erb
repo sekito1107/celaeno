@@ -30,7 +30,7 @@
       maxlength: 72
     ) %>
 
-    <%= form.submit "Update Credentials", class: "btn btn-primary" %>
+    <%= render ButtonComponent.new(text: "Update Credentials") %>
 
     <div class="auth-links auth-links--centered">
       <%= link_to "Return to Archive", new_session_path %>

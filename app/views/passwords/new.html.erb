@@ -19,7 +19,7 @@
       value: params[:email_address]
     ) %>
 
-    <%= form.submit "Send Recovery Sigil", class: "btn btn-primary" %>
+    <%= render ButtonComponent.new(text: "Send Recovery Sigil") %>
 
     <div class="auth-links auth-links--centered">
       <%= link_to "Return to Archive", new_session_path %>

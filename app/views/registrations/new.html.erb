@@ -62,7 +62,7 @@
       maxlength: 72
     ) %>
 
-    <%= form.submit "Begin Investigation", class: "btn btn-primary" %>
+    <%= render ButtonComponent.new(text: "Begin Investigation") %>
 
     <div class="auth-links auth-links--centered">
       <%= link_to "Already an Investigator?", new_session_path %>
