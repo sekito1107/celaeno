@@ -6,7 +6,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  color: var(--text-primary);
+  color: var(--color-text-main);
 }
 
 .lobby-background {
@@ -291,6 +291,11 @@
   overflow: hidden;
 }
 
+.game_mode_card__action-button:focus-visible {
+  outline: 2px solid var(--color-faint-cyan);
+  outline-offset: 2px;
+}
+
 /* Hover effect for button: Flash/Glow */
 .game_mode_card__action-button::before {
   content: '';
@@ -357,6 +362,11 @@
 .carousel-control:active {
   transform: scale(0.95);
   color: #b4941f;
+}
+
+.carousel-control:focus-visible {
+  outline: 2px solid var(--color-faint-cyan);
+  outline-offset: 4px;
 }
 
 /* Slide Visibility */

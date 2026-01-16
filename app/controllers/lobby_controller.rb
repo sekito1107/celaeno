@@ -12,7 +12,7 @@ class LobbyController < ApplicationController
       {
         id: "mountains_of_madness",
         title: "未実装",
-        description: "誠意作成中！",
+        description: "鋭意作成中！",
         image_path: "lobby/mountains_of_madness.jpg",
         action_text: "遠征に参加",
         badge: "RANKED"
