@@ -127,15 +127,16 @@ body::after {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100vh;
-  padding: var(--spacing-lg);
+  height: 100vh; /* Fallback */
+  height: 100dvh; /* Mobile-friendly dynamic viewport height */
+  padding: var(--spacing-md);
   backdrop-filter: blur(2px);
-  overflow: hidden; /* スクロールを完全に禁止 */
+  overflow-y: auto; /* コンテンツが多い場合はスクロールを許可 */
 }
 
 .auth-logo {
   text-align: center;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
   user-select: none;
 }
 
@@ -193,7 +194,7 @@ body::after {
 .auth-form {
   width: 100%;
   max-width: 440px;
-  padding: 2.5rem;
+  padding: 2rem;
   background: var(--color-form-bg);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--border-radius);
@@ -206,7 +207,7 @@ body::after {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--color-border-subtle);
   padding-bottom: var(--spacing-sm);
 }
@@ -302,7 +303,7 @@ body::after {
    =========================================== */
 .btn-primary {
   width: 100%;
-  margin-top: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
   padding: 14px;
   background: linear-gradient(to bottom, #0f172a, #030712);
   border: 1px solid var(--color-muted-teal);
@@ -354,7 +355,7 @@ body::after {
 }
 
 .auth-footer {
-  margin-top: 4rem;
+  margin-top: 2rem;
   text-align: center;
 }
 
