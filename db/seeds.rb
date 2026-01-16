@@ -57,3 +57,27 @@ end
 
 puts "Created #{Card.count} cards"
 puts "Created #{CardKeyword.count} card-keyword associations"
+
+# ===========================================
+# テストユーザーの作成（開発環境用）
+# ===========================================
+if Rails.env.development? || Rails.env.test?
+  puts "Creating test users..."
+
+  test_users = [
+    { name: "Admin", email_address: "admin@example.com", password: "adminpass123" },
+    { name: "TestUser1", email_address: "test1@example.com", password: "testpass123" },
+    { name: "TestUser2", email_address: "test2@example.com", password: "testpass123" }
+  ]
+
+  ActiveRecord::Base.transaction do
+    test_users.each do |attrs|
+      user = User.find_or_initialize_by(email_address: attrs[:email_address])
+      user.name = attrs[:name]
+      user.password = attrs[:password]
+      user.save!
+    end
+  end
+
+  puts "Created #{User.count} users"
+end
