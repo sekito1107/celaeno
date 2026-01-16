@@ -2,10 +2,7 @@
   <%= render AuthLogoComponent.new %>
 
   <%= form_with url: session_path, class: "auth-form" do |form| %>
-    <div class="auth-form__header">
-      <h2 class="auth-form__title">Investigator Login</h2>
-      <div class="sanity-indicator">Sanity Stable</div>
-    </div>
+    <%= render AuthFormHeaderComponent.new(title: "Investigator Login", sanity_indicator: "Sanity Stable") %>
 
     <%= render FormInputComponent.new(
       form: form,

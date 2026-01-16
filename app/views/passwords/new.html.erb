@@ -2,9 +2,7 @@
   <%= render AuthLogoComponent.new %>
 
   <%= form_with url: passwords_path, class: "auth-form" do |form| %>
-    <div class="auth-form__header">
-      <h2 class="auth-form__title">Lost Knowledge?</h2>
-    </div>
+    <%= render AuthFormHeaderComponent.new(title: "Lost Knowledge?") %>
 
     <%= render FormInputComponent.new(
       form: form,

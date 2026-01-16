@@ -2,10 +2,7 @@
   <%= render AuthLogoComponent.new %>
 
   <%= form_with model: @user, url: registration_path, class: "auth-form" do |form| %>
-    <div class="auth-form__header">
-      <h2 class="auth-form__title">Request Clearance</h2>
-      <div class="sanity-indicator">New Investigator</div>
-    </div>
+    <%= render AuthFormHeaderComponent.new(title: "Request Clearance", sanity_indicator: "New Investigator") %>
 
     <% if @user.errors.any? %>
       <div class="flash flash--alert flash--spaced" role="alert">

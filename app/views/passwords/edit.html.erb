@@ -2,9 +2,7 @@
   <%= render AuthLogoComponent.new %>
 
   <%= form_with url: password_path(params[:token]), method: :put, class: "auth-form" do |form| %>
-    <div class="auth-form__header">
-      <h2 class="auth-form__title">Forge New Key</h2>
-    </div>
+    <%= render AuthFormHeaderComponent.new(title: "Forge New Key") %>
 
     <%= render FormInputComponent.new(
       form: form,
