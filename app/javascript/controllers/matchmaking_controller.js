@@ -9,7 +9,8 @@ export default class extends Controller {
   static targets = ["searchingState", "matchedState"]
 
   connect() {
-    this.channel = createConsumer().subscriptions.create(
+    this.consumer = createConsumer()
+    this.channel = this.consumer.subscriptions.create(
       { channel: "MatchmakingChannel" },
       { received: this.handleMessage.bind(this) }
     )
@@ -17,6 +18,7 @@ export default class extends Controller {
 
   disconnect() {
     this.channel?.unsubscribe()
+    this.consumer?.disconnect()
   }
 
   handleMessage(data) {
