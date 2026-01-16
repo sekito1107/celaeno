@@ -47,4 +47,21 @@ RSpec.describe "Matchmaking", type: :request do
       expect(response.body).to include("対戦相手を探しています")
     end
   end
+
+  describe "DELETE /matchmaking" do
+    let(:user) { create(:user) }
+
+    before do
+      post session_path, params: { email_address: user.email_address, password: user.password }
+      user.join_matchmaking!("cthulhu")
+    end
+
+    it "removes the user from the queue and redirects to lobby" do
+      expect {
+        delete matchmaking_path
+      }.to change(MatchmakingQueue, :count).by(-1)
+
+      expect(response).to redirect_to(lobby_path)
+    end
+  end
 end

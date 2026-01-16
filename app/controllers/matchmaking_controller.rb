@@ -14,5 +14,7 @@ class MatchmakingController < ApplicationController
   end
 
   def destroy
+    current_user.leave_matchmaking!
+    redirect_to lobby_path
   end
 end
