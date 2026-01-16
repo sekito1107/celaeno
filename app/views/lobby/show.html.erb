@@ -3,7 +3,14 @@
 <% end %>
 
 <div class="lobby-container">
-  <div class="lobby-background"></div>
+    <div class="lobby-background">
+    <div class="lobby-background__track">
+      <div class="lobby-background__image"></div>
+      <div class="lobby-background__image lobby-background__image--mirrored"></div>
+      <div class="lobby-background__image"></div>
+    </div>
+  </div>
+  <div class="lobby-overlay"></div>
   
   <div class="lobby-header">
     <%= render Lobby::UserProfileComponent.new(user: current_user) %>
