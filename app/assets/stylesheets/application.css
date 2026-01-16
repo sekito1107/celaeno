@@ -50,7 +50,6 @@
 
 html, body {
   height: 100%;
-  overflow: hidden; /* スクロールバー非表示 */
   margin: 0;
 }
 
