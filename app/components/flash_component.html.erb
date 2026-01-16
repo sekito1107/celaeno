@@ -1,0 +1,13 @@
+<div id="flash-messages">
+  <% alerts.each do |message| %>
+    <div class="flash flash--alert" role="alert">
+      <%= message %>
+    </div>
+  <% end %>
+
+  <% notices.each do |message| %>
+    <div class="flash flash--notice" role="status">
+      <%= message %>
+    </div>
+  <% end %>
+</div>

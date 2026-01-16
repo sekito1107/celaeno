@@ -1,28 +1,55 @@
-<h1>ログイン</h1>
-
-<%= form_with url: session_path, class: "auth-form" do |form| %>
-  <div class="form-group">
-    <%= form.label :email_address, "メールアドレス" %>
-    <%= form.email_field :email_address,
-                         required: true,
-                         autofocus: true,
-                         autocomplete: "username",
-                         placeholder: "example@mail.com",
-                         value: params[:email_address] %>
+<div class="auth-page">
+  <div class="auth-logo">
+    <h1 class="logo-title">Call of Celeano</h1>
+    <p class="logo-subtitle">— Archive of the Great Old Ones —</p>
   </div>
 
-  <div class="form-group">
-    <%= form.label :password, "パスワード" %>
-    <%= form.password_field :password,
-                            required: true,
-                            autocomplete: "current-password",
-                            placeholder: "パスワードを入力",
-                            maxlength: 72 %>
+  <%= form_with url: session_path, class: "auth-form" do |form| %>
+    <div class="auth-form__header">
+      <h2 class="auth-form__title">Investigator Login</h2>
+      <div class="sanity-indicator">Sanity Stable</div>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :email_address, "Identifier" %>
+      <div class="input-wrapper">
+        <span class="input-icon">👤</span>
+        <%= form.email_field :email_address,
+                             required: true,
+                             autofocus: true,
+                             autocomplete: "username",
+                             placeholder: "Enter Name...",
+                             value: params[:email_address] %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :password, "Passphrase" %>
+      <div class="input-wrapper">
+        <span class="input-icon">🔑</span>
+        <%= form.password_field :password,
+                                required: true,
+                                autocomplete: "current-password",
+                                placeholder: "••••••••",
+                                maxlength: 72 %>
+      </div>
+    </div>
+
+    <div class="auth-links">
+      <label style="display: flex; align-items: center; gap: 4px; color: #4b5563; cursor: pointer;">
+        <input type="checkbox" style="width: auto; margin: 0;"> Keep Gate Open
+      </label>
+      <%= link_to "Lost Knowledge?", new_password_path %>
+    </div>
+
+    <%= form.submit "Access Archive", class: "btn btn-primary" %>
+    
+    <div style="margin-top: 1rem; text-align: center; font-size: 0.65rem; color: #374151; letter-spacing: 0.1em; text-transform: uppercase;">
+      Miskatonic University Network
+    </div>
+  <% end %>
+
+  <div class="auth-footer">
+    <%= link_to "Request New Clearance", new_registration_path, class: "btn-text" %>
   </div>
-
-  <%= form.submit "ログイン", class: "btn btn-primary" %>
-<% end %>
-
-<div class="auth-links">
-  <%= link_to "パスワードをお忘れですか？", new_password_path %>
 </div>

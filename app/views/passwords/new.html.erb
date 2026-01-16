@@ -1,21 +1,31 @@
-<%# パスワードリセット要求画面 %>
-
-<h1>パスワードをお忘れですか？</h1>
-
-<%= form_with url: passwords_path, class: "auth-form" do |form| %>
-  <div class="form-group">
-    <%= form.label :email_address, "メールアドレス" %>
-    <%= form.email_field :email_address,
-                         required: true,
-                         autofocus: true,
-                         autocomplete: "username",
-                         placeholder: "example@mail.com",
-                         value: params[:email_address] %>
+<div class="auth-page">
+  <div class="auth-logo">
+    <h1 class="logo-title">Call of Celeano</h1>
+    <p class="logo-subtitle">— Archive of the Great Old Ones —</p>
   </div>
 
-  <%= form.submit "リセット手順を送信", class: "btn btn-primary" %>
-<% end %>
+  <%= form_with url: passwords_path, class: "auth-form" do |form| %>
+    <div class="auth-form__header">
+      <h2 class="auth-form__title">Lost Knowledge?</h2>
+    </div>
 
-<div class="auth-links">
-  <%= link_to "ログインに戻る", new_session_path %>
+    <div class="form-group">
+      <%= form.label :email_address, "Identifier" %>
+      <div class="input-wrapper">
+        <span class="input-icon">👤</span>
+        <%= form.email_field :email_address,
+                             required: true,
+                             autofocus: true,
+                             autocomplete: "username",
+                             placeholder: "Enter Name...",
+                             value: params[:email_address] %>
+      </div>
+    </div>
+
+    <%= form.submit "Send Recovery Sigil", class: "btn btn-primary" %>
+
+    <div class="auth-links" style="display: block; text-align: center; margin-top: 2rem;">
+      <%= link_to "Return to Archive", new_session_path %>
+    </div>
+  <% end %>
 </div>
