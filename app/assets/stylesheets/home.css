@@ -1,0 +1,145 @@
+/* Landing Page Specific Styles */
+.lp-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  color: #e5e5e5;
+  text-align: center;
+}
+
+/* Override body background for Home Page only */
+/* Note: This relies on the background image being present in asset path */
+body {
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
+    url("lp_background.png") !important; 
+  background-position: center bottom !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}
+
+.lp-content {
+  padding: 2rem;
+  max-width: 800px;
+  animation: fadeIn 2s ease-out;
+}
+
+.lp-subtitle {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.4em;
+  color: #94a3b8; /* Muted silver */
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.lp-title {
+  font-family: 'Prata', 'Shippori Mincho', serif;
+  font-size: 5rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  margin: 0 0 2rem 0;
+  color: #f1f5f9;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.9);
+  position: relative;
+  background: linear-gradient(to bottom, #f8fafc 40%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lp-description {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.25rem;
+  line-height: 2;
+  color: #cbd5e1;
+  margin-bottom: 3.5rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+  letter-spacing: 0.15em;
+}
+
+.lp-description p {
+  margin: 0;
+}
+
+.lp-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.lp-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 48px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(4px);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.lp-button::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.lp-button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-color: #fff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.lp-button:hover::before {
+  left: 100%;
+}
+
+.lp-button .icon {
+  font-size: 1.2em;
+  color: #94a3b8;
+  transition: color 0.3s;
+}
+
+.lp-button:hover .icon {
+  color: #fff;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lp-title {
+    font-size: 3rem;
+  }
+  .lp-description {
+    font-size: 1rem;
+  }
+  .lp-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

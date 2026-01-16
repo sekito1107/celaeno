@@ -1,8 +1,25 @@
-<h1>Celeano</h1>
-<p>Welcome to the game.</p>
-
-<% if authenticated? %>
-  <%= button_to "ログアウト", session_path, method: :delete %>
-<% else %>
-  <%= link_to "ログイン", new_session_path %>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "home", "data-turbo-track": "reload" %>
 <% end %>
+
+<div class="lp-container">
+  <main class="lp-content">
+    <p class="lp-subtitle">プレアデス星団の彼方へ</p>
+    <h1 class="lp-title" data-text="CALL OF CELEANO">CALL OF CELEANO</h1>
+    
+    <div class="lp-description">
+      <p>禁断の知識、石版の記憶。</p>
+      <p>深宇宙の図書館で、あなたの正気は試される。</p>
+    </div>
+
+    <div class="lp-actions">
+      <% if authenticated? %>
+        <%= button_to "探索を再開する", lobby_path, method: :get, class: "lp-button" %>
+      <% else %>
+        <%= link_to new_session_path, class: "lp-button" do %>
+          <span class="icon">❖</span> 探索を開始する
+        <% end %>
+      <% end %>
+    </div>
+  </main>
+</div>
