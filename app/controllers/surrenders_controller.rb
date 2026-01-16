@@ -1,7 +1,6 @@
 class SurrendersController < ApplicationController
   def create
-    game = Game.find(params[:game_id])
-    game_player = current_user.game_players.find_by(game: game)
+    game_player = current_user.game_players.find_by(game_id: params[:game_id])
 
     if game_player
       game_player.surrender!
