@@ -7,6 +7,7 @@ class JoinMatchmaking
 
     active_game = user.games.find_by(status: [ :matching, :playing ])
     if active_game
+      user.matchmaking_queue&.destroy!
       context.game = active_game
       return
     end
