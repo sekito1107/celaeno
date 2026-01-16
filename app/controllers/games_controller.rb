@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   include GameAuthenticatable
-  
+
   layout "game"
 
   def show
