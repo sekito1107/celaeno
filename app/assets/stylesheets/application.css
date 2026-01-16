@@ -70,6 +70,11 @@ body {
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
+  
+  /* Mobile fallback - prevent jittery scrolling on iOS */
+  @supports (-webkit-touch-callout: none) {
+    background-attachment: scroll;
+  }
 }
 
 /* Fog Animation Layers */
@@ -140,6 +145,7 @@ body::after {
   line-height: 1.0;
   
   /* Metallic Gradient: Pinkish White top -> Cyan bottom */
+  color: #fff; /* Fallback for browsers without background-clip support */
   background: linear-gradient(180deg, #ffe4e6 10%, #fff 40%, #a5f3fc 60%, #2dd4bf 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
