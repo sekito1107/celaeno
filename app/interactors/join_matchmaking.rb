@@ -5,6 +5,10 @@ class JoinMatchmaking
     user = context.user
     deck_type = context.deck_type
 
+    if user.games.where(status: [:matching, :playing]).exists?
+      context.fail!(error: "User is already in an active game")
+    end
+
     ActiveRecord::Base.transaction do
       # 既に参加済みなら削除（リセット）
       user.matchmaking_queue&.destroy!
