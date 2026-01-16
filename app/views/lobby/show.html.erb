@@ -3,13 +3,7 @@
 <% end %>
 
 <div class="lobby-container">
-    <div class="lobby-background">
-    <div class="lobby-background__track">
-      <div class="lobby-background__image"></div>
-      <div class="lobby-background__image lobby-background__image--mirrored"></div>
-      <div class="lobby-background__image"></div>
-    </div>
-  </div>
+    <div class="lobby-background"></div>
   <div class="lobby-overlay"></div>
   
   <div class="lobby-header">
@@ -17,14 +11,27 @@
     <!-- Settings button can go here later -->
   </div>
 
-  <div class="lobby-content">
-    <div class="lobby-carousel">
-      <%= render Lobby::GameModeCardComponent.new(
-        title: "禁断の書庫",
-        description: "ランク変動なし。新しいデッキを試すのに最適です。",
-        image_path: "lobby/forbidden_library.jpg",
-        action_text: "儀式を始める"
-      ) %>
+  <div class="lobby-content" data-controller="lobby-carousel">
+    <button class="carousel-control carousel-control--prev" data-action="lobby-carousel#previous">
+      ❮
+    </button>
+
+    <div class="lobby-carousel-viewport">
+      <% @game_modes.each_with_index do |mode, index| %>
+        <div class="lobby-carousel-slide <%= 'hidden' unless index == 0 %>" data-lobby-carousel-target="slide">
+          <%= render Lobby::GameModeCardComponent.new(
+            title: mode[:title],
+            description: mode[:description],
+            image_path: mode[:image_path],
+            action_text: mode[:action_text],
+            badge: mode[:badge]
+          ) %>
+        </div>
+      <% end %>
     </div>
+
+    <button class="carousel-control carousel-control--next" data-action="lobby-carousel#next">
+      ❯
+    </button>
   </div>
 </div>
