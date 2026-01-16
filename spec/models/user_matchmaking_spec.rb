@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
     let(:deck_type) { 'cthulhu' }
 
     before do
-      allow(StartGame).to receive(:call)
+      allow(StartGame).to receive(:call!)
     end
 
     context '対戦相手が待っていない場合' do
@@ -66,7 +66,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'StartGameを呼び出すこと' do
-        expect(StartGame).to receive(:call).with(game: kind_of(Game))
+        expect(StartGame).to receive(:call!).with(game: kind_of(Game))
         user.join_matchmaking!(deck_type)
       end
 

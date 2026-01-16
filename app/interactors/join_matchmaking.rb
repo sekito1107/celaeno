@@ -45,7 +45,7 @@ class JoinMatchmaking
     GamePlayer.create!(game: game, user: opponent, role: :guest, deck_type: opponent_queue.deck_type)
 
     # ゲーム開始処理
-    StartGame.call(game: game)
+    StartGame.call!(game: game)
 
     context.game = game
   end
