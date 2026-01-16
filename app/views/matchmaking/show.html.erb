@@ -2,7 +2,9 @@
   <%= stylesheet_link_tag "matchmaking", "data-turbo-track": "reload" %>
 <% end %>
 
-<div class="matchmaking-container">
+<div class="matchmaking-container"
+     data-controller="matchmaking"
+     data-matchmaking-user-id-value="<%= current_user.id %>">
   <div class="matchmaking-background"></div>
   <div class="matchmaking-overlay"></div>
 
@@ -24,9 +26,14 @@
         <div class="infinity-glow"></div>
       </div>
       
-      <div class="matchmaking-status-text">
+      <div class="matchmaking-status-text" data-matchmaking-target="searchingState">
         <h2 class="status-title">探索中...</h2>
         <p class="status-subtitle">深淵の住人を探しています</p>
+      </div>
+
+      <div class="matchmaking-status-text hidden" data-matchmaking-target="matchedState">
+        <h2 class="status-title">遭遇！</h2>
+        <p class="status-subtitle">深淵の住人があなたを見つめている...</p>
       </div>
     </div>
 
