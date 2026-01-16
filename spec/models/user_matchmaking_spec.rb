@@ -49,8 +49,7 @@ RSpec.describe User, type: :model do
       end
 
       it '両方のユーザーのゲームプレイヤーを作成すること' do
-        user.join_matchmaking!(deck_type)
-        game = Game.last
+        game = user.join_matchmaking!(deck_type)
 
         expect(game.users).to include(user, opponent)
         expect(game.game_players.find_by(user: user).role).to eq('host')
