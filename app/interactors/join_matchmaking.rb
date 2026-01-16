@@ -5,8 +5,10 @@ class JoinMatchmaking
     user = context.user
     deck_type = context.deck_type
 
-    if user.games.where(status: [ :matching, :playing ]).exists?
-      context.fail!(error: "User is already in an active game")
+    active_game = user.games.find_by(status: [ :matching, :playing ])
+    if active_game
+      context.game = active_game
+      return
     end
 
     ActiveRecord::Base.transaction do

@@ -32,6 +32,19 @@ RSpec.describe "マッチメイキング機能", type: :request do
         expect(response).to redirect_to(game_path(game))
       end
     end
+
+    context "すでにゲームに参加中の場合" do
+      let(:game) { create(:game, status: :playing) }
+      let!(:game_player) { create(:game_player, game: game, user: user) }
+
+      it "そのゲーム画面にリダイレクトすること" do
+        expect {
+          post matchmaking_path
+        }.not_to change(Game, :count)
+
+        expect(response).to redirect_to(game_path(game))
+      end
+    end
   end
 
   describe "GET /matchmaking (待機画面)" do
