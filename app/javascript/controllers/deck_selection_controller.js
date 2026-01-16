@@ -25,8 +25,12 @@ export default class extends Controller {
 
       if (response.ok) {
         console.log("Deck updated:", selectedDeck)
+        if (this.timer) clearTimeout(this.timer)
         this.element.dataset.status = "saved"
-        setTimeout(() => this.element.dataset.status = "", 2000)
+        this.timer = setTimeout(() => {
+          this.element.dataset.status = ""
+          this.timer = null
+        }, 2000)
       } else {
         console.error("Failed to update deck")
         // Revert selection or show error
