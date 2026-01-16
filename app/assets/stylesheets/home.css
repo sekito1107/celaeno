@@ -8,7 +8,6 @@
   width: 100%;
   position: relative;
   z-index: 10;
-  z-index: 10;
   color: #e5e5e5;
   text-align: center;
   transition: all 0.5s ease;
@@ -49,7 +48,7 @@
 .sanity-trigger:hover::after {
   opacity: 1;
   text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000; /* Outline */
-  animation: glitch-text 0.1s infinite random;
+  animation: glitch-text 0.1s infinite alternate;
 }
 
 /* 2. Global Screen Effect using :has() */
@@ -114,10 +113,6 @@ body:has(.sanity-trigger:hover) .lp-title {
   100% { opacity: 0.8; transform: scale(1.0); }
 }
 
-/* Override body background for Home Page only */
-/* Note: This relies on the background image being present in asset path */
-/* Override body background for Home Page only */
-/* Note: This relies on the background image being present in asset path */
 body.home-index {
   background-image: 
     linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95)),
@@ -268,8 +263,11 @@ body.home-index {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .lp-title {
-    font-size: 3rem;
+  .title-prefix {
+    font-size: 2rem;
+  }
+  .title-main {
+    font-size: 3.5rem;
   }
   .lp-description {
     font-size: 1rem;
