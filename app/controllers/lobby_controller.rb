@@ -1,5 +1,4 @@
 class LobbyController < ApplicationController
-
   def show
     @game_modes = [
       {
