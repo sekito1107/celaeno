@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class FlashComponent < ApplicationComponent
-  def initialize(flash: nil)
-    @flash = flash
+  def initialize(flash: {})
+    @flash = flash || {}
   end
 
   def alerts
