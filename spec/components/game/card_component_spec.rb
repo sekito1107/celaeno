@@ -37,7 +37,7 @@ RSpec.describe Game::CardComponent, type: :component do
     # although standard factory usage should be fine if logic is in model.
     # However, to be safe and clear about what we are testing (the component),
     # we rely on the model's behavior.
-    
+
     it "renders the game card details with current stats" do
       # Ensure total_attack returns the expected value (logic is in model, but we check if component uses it)
       allow(game_card).to receive(:total_attack).and_return(5)
