@@ -7,7 +7,9 @@
 
   <!-- Opponent Area -->
   <div class="status-bar-wrapper opponent-status">
-    <%= render Game::StatusBarComponent.new(game_player: @opponent_game_player) %>
+    <% if @opponent_game_player %>
+      <%= render Game::StatusBarComponent.new(game_player: @opponent_game_player) %>
+    <% end %>
   </div>
 
   <div class="play-mat play-mat-opponent">
