@@ -2,7 +2,7 @@
      data-controller="card-hover"
      data-action="mouseenter->card-hover#showDetail mouseleave->card-hover#hideDetail <%= 'click->card-hover#pinDetail' if interactive? %>"
      data-card-hover-id-value="<%= card_hover_id %>"
-     data-card-hover-detail-html-value="<%= detail_html %>">
+     data-card-hover-detail-html-value="<%= ERB::Util.html_escape(detail_html) %>">
   
   <div class="simple-frame mockup-style">
     <%# Full Art %>
