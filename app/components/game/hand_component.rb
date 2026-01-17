@@ -14,7 +14,4 @@ class Game::HandComponent < ApplicationComponent
     @viewer == @game_player.user
   end
 
-  def opponent_hand_count
-    cards.count
-  end
 end
