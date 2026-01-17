@@ -108,7 +108,7 @@ class Game::Card::BaseComponent < ApplicationComponent
       end
 
       def threshold
-        card_source.threshold
+        card_source.threshold_san
       end
 
       def has_threshold?
