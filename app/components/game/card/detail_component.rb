@@ -5,5 +5,5 @@ class Game::Card::DetailComponent < Game::Card::BaseComponent
         super(card_entity: card_entity)
       end
 
-      # No specific logic override needed yet, inherits from Base
+  # No specific logic override needed yet, inherits from Base
 end

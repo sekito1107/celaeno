@@ -28,13 +28,13 @@ class Game::StatusBarComponent < ApplicationComponent
   def sanity_level_class
     case san
     when 0..5
-      'sanity-critical'
+      "sanity-critical"
     when 6..10
-      'sanity-low'
+      "sanity-low"
     when 11..15
-      'sanity-warning'
+      "sanity-warning"
     else
-      'sanity-normal'
+      "sanity-normal"
     end
   end
 end

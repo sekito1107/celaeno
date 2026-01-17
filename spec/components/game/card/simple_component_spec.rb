@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe Game::Card::SimpleComponent, type: :component do
   let(:card) { create(:card, name: "Test Card", cost: 3, attack: 2, hp: 4, card_type: :unit) }
-  
+
   context "with a static Card object" do
     it "renders correctly as a simple view" do
       render_inline(described_class.new(card_entity: card))
@@ -15,7 +15,7 @@ RSpec.describe Game::Card::SimpleComponent, type: :component do
       expect(page).to have_css(".simple-cost-circle", text: "3")
       expect(page).to have_css(".stat-value", text: "2")
       expect(page).to have_css(".stat-value", text: "4")
-      
+
       # Should NOT have detail specific classes or orbs
       expect(page).not_to have_css(".detail-panel")
       expect(page).not_to have_css(".stat-orb")

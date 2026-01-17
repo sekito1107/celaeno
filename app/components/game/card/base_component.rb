@@ -98,7 +98,7 @@ class Game::Card::BaseComponent < ApplicationComponent
       def spell?
         card_source.card_type == "spell"
       end
-      
+
       def resolving?
         game_card? && @card_entity.location_resolving?
       end
@@ -106,7 +106,7 @@ class Game::Card::BaseComponent < ApplicationComponent
       def graveyard?
         game_card? && @card_entity.location_graveyard?
       end
-      
+
       def threshold
         card_source.threshold
       end
