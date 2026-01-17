@@ -263,15 +263,16 @@
 
 /* デッキの山札感 */
 .deck-placeholder {
-  background: repeating-linear-gradient(
-    -45deg,
-    #2a2a2a,
-    #2a2a2a 2px,
-    #333 2px,
-    #333 4px
-  );
-  border: 2px solid #444;
-  box-shadow: 2px 2px 0 #111, 4px 4px 0 #111; /* 簡易的な厚み */
+  background-image: url("cards/card_back.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 8px; /* Match card radius */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    2px 2px 0 #111, 
+    4px 4px 0 #111,
+    0 0 10px rgba(0,0,0,0.5); /* 簡易的な厚み + 影 */
 }
 
 /* カード裏面 (よりリッチに) */
