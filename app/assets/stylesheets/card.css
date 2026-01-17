@@ -300,9 +300,6 @@
 .simple-poison-overlay {
   font-size: 0.85rem; /* Smaller */
   opacity: 0.9;
-}
-
-.simple-poison-overlay {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   background: radial-gradient(circle, transparent 40%, rgba(16, 185, 129, 0.3) 100%);
