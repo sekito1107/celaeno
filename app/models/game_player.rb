@@ -22,7 +22,7 @@ class GamePlayer < ApplicationRecord
   end
 
   def max_san
-    [san, DEFAULT_SAN].max
+    [ san, DEFAULT_SAN ].max
   end
 
   def deck
