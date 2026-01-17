@@ -167,6 +167,10 @@
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+.card-graveyard {
+  filter: grayscale(100%) brightness(0.8);
+}
+
 .simple-frame {
   position: relative;
   width: 100%;

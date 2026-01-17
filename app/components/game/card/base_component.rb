@@ -102,6 +102,10 @@ class Game::Card::BaseComponent < ApplicationComponent
       def resolving?
         game_card? && @card_entity.location_resolving?
       end
+
+      def graveyard?
+        game_card? && @card_entity.location_graveyard?
+      end
       
       def threshold
         card_source.threshold
