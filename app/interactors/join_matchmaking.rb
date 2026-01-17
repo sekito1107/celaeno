@@ -28,8 +28,8 @@ class JoinMatchmaking
 
     if context.broadcast_target && context.game
       MatchmakingChannel.broadcast_to(
-        context.broadcast_target, 
-        action: "matched", 
+        context.broadcast_target,
+        action: "matched",
         game_id: context.game.id,
         opponent_name: user.name,
         opponent_image: ActionController::Base.helpers.asset_path("lobby/default_avatar.jpg")
