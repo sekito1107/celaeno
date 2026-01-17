@@ -48,7 +48,11 @@ export default class extends Controller {
       }
 
       if (this.hasOpponentAvatarContainerTarget) {
-        this.opponentAvatarContainerTarget.innerHTML = `<img src="${data.opponent_image}" class="player-card__image" alt="${data.opponent_name}">`
+        const img = document.createElement("img")
+        img.src = data.opponent_image
+        img.classList.add("player-card__image")
+        img.alt = data.opponent_name
+        this.opponentAvatarContainerTarget.replaceChildren(img)
       }
 
       this.triggerEncounterAnimation(data.game_id)
@@ -56,6 +60,8 @@ export default class extends Controller {
   }
 
   triggerEncounterAnimation(gameId) {
+    if (!gameId) return
+
     // コンテナ全体に match-found クラスを追加
     this.element.classList.add("match-found")
 

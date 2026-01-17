@@ -15,7 +15,7 @@ class MatchmakingController < ApplicationController
     @game_id = params[:game_id]
 
     if @game_id
-      game = Game.find_by(id: @game_id)
+      game = current_user.games.find_by(id: @game_id)
       player = game&.game_players&.find_by(user: current_user)
       @opponent = player&.opponent&.user
     end
