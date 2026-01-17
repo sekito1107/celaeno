@@ -24,4 +24,11 @@ class Game::Card::SimpleComponent < Game::Card::BaseComponent
       def card_hover_id
         @card_entity&.id || 'preview'
       end
+
+      def wrapper_classes
+        classes = ["card-wrapper", "card-simple"]
+        classes << "card-field" if variant_field?
+        classes << "card-graveyard" if graveyard?
+        classes.join(" ")
+      end
 end

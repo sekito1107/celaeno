@@ -1,4 +1,4 @@
-<div class="card-wrapper card-simple <%= 'card-field' if variant_field? %> <%= 'card-graveyard' if graveyard? %>" 
+<div class="<%= wrapper_classes %>" 
      data-controller="card-hover"
      data-action="mouseenter->card-hover#showDetail mouseleave->card-hover#hideDetail <%= 'click->card-hover#pinDetail' if interactive? %>"
      data-card-hover-id-value="<%= card_hover_id %>"
