@@ -3,20 +3,47 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["modal"]
 
-  open(event) {
-    if (event) event.stopPropagation() // Prevent bubbling
-    this.modalTarget.classList.remove("hidden")
+  connect() {
+    // Store reference to the element
+    this.modalElement = this.modalTarget
+    this.closeButtonElement = this.modalElement.querySelector(".modal-close-btn")
+
+    // Move modal to body to bypass parent transforms (like rotation)
+    document.body.appendChild(this.modalElement)
+
+    // Manually bind events since data-action doesn't work after moving element out of scope
+    this.boundCloseOverlay = this.closeOverlay.bind(this)
+    this.boundCloseButton = this.closeButtonAction.bind(this)
+
+    this.modalElement.addEventListener("click", this.boundCloseOverlay)
+    if (this.closeButtonElement) {
+      this.closeButtonElement.addEventListener("click", this.boundCloseButton)
+    }
   }
 
-  close(event) {
-    // Check if click is on the backdrop (the modal target itself)
-    if (event.target === this.modalTarget) {
-      this.modalTarget.classList.add("hidden")
+  disconnect() {
+    if (this.modalElement) {
+      this.modalElement.removeEventListener("click", this.boundCloseOverlay)
+      if (this.closeButtonElement) {
+        this.closeButtonElement.removeEventListener("click", this.boundCloseButton)
+      }
+      this.modalElement.remove()
+    }
+  }
+
+  open(event) {
+    if (event) event.stopPropagation()
+    this.modalElement.classList.remove("hidden")
+  }
+
+  closeOverlay(event) {
+    if (event.target === this.modalElement) {
+      this.modalElement.classList.add("hidden")
     }
   }
   
-  closeButton(event) {
+  closeButtonAction(event) {
     event.stopPropagation()
-    this.modalTarget.classList.add("hidden")
+    this.modalElement.classList.add("hidden")
   }
 }
