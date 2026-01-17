@@ -17,33 +17,29 @@ class Game::FieldComponent < ApplicationComponent
   end
 
   def graveyard_top_card
-    # N+1対策: メモリ上の game_cards から検索 (updated_at, id でソートされている前提だが、game_cardsは順不同の可能性があるためソートが必要)
-    # しかし、大量のカードがある場合 sort は重い。ここでは簡易的に id 最大を取得するか、
-    # コントローラーでの incldes 時に order を指定するのがベストだが、
-    # view_component 内での sort は許容範囲とする。
-    @game_player.game_cards
-                .select { |gc| gc.location_graveyard? }
-                .max_by { |gc| [ gc.updated_at, gc.id ] }
+    sorted_cards_at(:graveyard).first
   end
 
   def banished_top_card
-    @game_player.game_cards
-                .select { |gc| gc.location_banished? }
-                .max_by { |gc| [ gc.updated_at, gc.id ] }
+    sorted_cards_at(:banished).first
   end
 
   def graveyard_cards
-    @game_player.game_cards
-                .select { |gc| gc.location_graveyard? }
-                .sort_by { |gc| [ gc.updated_at, gc.id ] }
-                .reverse
+    sorted_cards_at(:graveyard)
   end
 
   def banished_cards
-    @game_player.game_cards
-                .select { |gc| gc.location_banished? }
-                .sort_by { |gc| [ gc.updated_at, gc.id ] }
-                .reverse
+    sorted_cards_at(:banished)
+  end
+
+  private
+
+  def sorted_cards_at(location)
+    # N+1対策: メモリ上の game_cards から検索
+    cards = @game_player.game_cards.select { |gc| gc.send("location_#{location}?") }
+
+    # updated_at, id の降順でソート (最新が先頭)
+    cards.sort_by { |gc| [ gc.updated_at, gc.id ] }.reverse
   end
 
   def slot_card(position)
