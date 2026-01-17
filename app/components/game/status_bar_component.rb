@@ -10,7 +10,7 @@ class Game::StatusBarComponent < ApplicationComponent
   end
 
   def max_hp
-    GamePlayer::DEFAULT_HP
+    @game_player.max_hp
   end
 
   def hp_percent
@@ -22,8 +22,7 @@ class Game::StatusBarComponent < ApplicationComponent
   end
 
   def max_san
-    # SANに上限はないため、現在の値がデフォルトを超えている場合は現在の値を分母とする（バーが100%になる）
-    [@game_player.san, GamePlayer::DEFAULT_SAN].max
+    @game_player.max_san
   end
 
   def san_percent
