@@ -7,7 +7,7 @@ class Game::HandComponent < ApplicationComponent
   end
 
   def cards
-    @game_player.hand
+    @cards ||= @game_player.hand
   end
 
   def viewer_is_owner?
