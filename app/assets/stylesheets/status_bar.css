@@ -1,0 +1,109 @@
+/* StatusBar Styles */
+
+.status-bar-container {
+  width: 280px;
+  background-color: rgba(0, 0, 0, 0.85);
+  border: 1px solid var(--color-gray-600);
+  border-radius: var(--border-radius);
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-display);
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.status-bar-container.insane {
+  border-color: #800000;
+  box-shadow: 0 0 15px rgba(139, 0, 0, 0.4);
+  animation: pulse-insanity 3s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-bar-container.insane {
+    animation: none;
+  }
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.status-row:last-child {
+  margin-bottom: 0;
+}
+
+.status-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.icon-symbol {
+  font-size: 1.2rem;
+}
+
+.hp-icon .icon-symbol { color: #e53e3e; }
+.san-icon .icon-symbol { color: #805ad5; }
+
+.status-gauge-wrapper {
+  flex-grow: 1;
+  height: 20px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.status-gauge-fill {
+  height: 100%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-gauge-fill {
+    transition: none;
+  }
+}
+
+.hp-fill {
+  background: linear-gradient(90deg, #2f855a, #c53030); /* Green to Red */
+  box-shadow: 0 0 10px rgba(47, 133, 90, 0.3);
+}
+
+.san-fill {
+  background: linear-gradient(90deg, #3182ce, #6b46c1); /* Blue to Purple */
+  box-shadow: 0 0 10px rgba(49, 130, 206, 0.3);
+}
+
+.status-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #000;
+  letter-spacing: 1px;
+}
+
+@keyframes pulse-insanity {
+  0% { box-shadow: 0 0 10px rgba(139, 0, 0, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(139, 0, 0, 0.6); }
+  100% { box-shadow: 0 0 10px rgba(139, 0, 0, 0.2); }
+}

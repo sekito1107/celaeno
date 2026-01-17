@@ -5,6 +5,9 @@ class GamePlayer < ApplicationRecord
   belongs_to :user
   has_many :game_cards, dependent: :destroy
 
+  DEFAULT_HP = 20
+  DEFAULT_SAN = 20
+
   enum :role, { host: 0, guest: 1 }
 
   def opponent
@@ -13,6 +16,14 @@ class GamePlayer < ApplicationRecord
 
   validates :hp, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :san, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
+  def max_hp
+    DEFAULT_HP
+  end
+
+  def max_san
+    [ san, DEFAULT_SAN ].max
+  end
 
   def deck
     game_cards.where(location: :deck).order(:position_in_stack)
