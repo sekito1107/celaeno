@@ -12,10 +12,10 @@ RSpec.describe Game::CardComponent, type: :component do
       expect(page).to have_css(".card-wrapper")
       # Default is :hand (simple)
       expect(page).to have_css(".simple-frame")
-      expect(page).to have_css(".simple-name", text: "Test Card")
-      expect(page).to have_css(".simple-cost", text: "3")
-      expect(page).to have_css(".simple-attack", text: "2")
-      expect(page).to have_css(".simple-hp", text: "4")
+      expect(page).to have_css(".name-text", text: "Test Card")
+      expect(page).to have_css(".simple-cost-circle", text: "3")
+      expect(page).to have_css(".stat-group.attack-group .stat-value", text: "2")
+      expect(page).to have_css(".stat-group.hp-group .stat-value", text: "4")
     end
   end
 
@@ -39,21 +39,20 @@ RSpec.describe Game::CardComponent, type: :component do
           render_inline(described_class.new(card_entity: game_card, variant: :hand))
           expect(page).to have_css(".card-simple")
           expect(page).to have_css(".simple-frame")
-          expect(page).to have_css(".simple-overlay")
-          expect(page).to have_css(".simple-name", text: "Test Card")
-          # Should NOT have the complex frame classes or orbs
-          expect(page).not_to have_css(".card-frame")
-          expect(page).not_to have_css(".stat-orb")
+          expect(page).to have_css(".name-text", text: "Test Card")
+          # Should NOT have the complex logic or detail panel
+          expect(page).not_to have_css(".detail-panel")
         end
       end
 
       context "with :detail variant (Detailed View)" do
         it "renders integrated frame and full stats" do
           render_inline(described_class.new(card_entity: game_card, variant: :detail))
-          expect(page).to have_css(".card-frame") # Integrated frame
-          expect(page).to have_css(".card-textbox")
-          # Should NOT have simple view classes
-          expect(page).not_to have_css(".card-simple")
+          expect(page).to have_css(".detail-panel") # Detail View Container
+          expect(page).to have_css(".detail-header")
+          expect(page).to have_css(".detail-name", text: "Test Card")
+          # Should NOT have simple view classes logic that might conflict or duplicate
+          expect(page).not_to have_css(".simple-frame")
         end
       end
   end
