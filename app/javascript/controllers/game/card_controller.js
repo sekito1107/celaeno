@@ -10,7 +10,9 @@ export default class extends Controller {
   }
 
   connect() {
-    this.element.setAttribute("draggable", "true")
+    if (this.element.getAttribute("draggable") !== "false") {
+      this.element.setAttribute("draggable", "true")
+    }
   }
 
   // ホバー時に詳細表示イベントを発火
