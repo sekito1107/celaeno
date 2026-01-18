@@ -57,7 +57,7 @@ def add_cards(player, cards, location, count, position: nil)
       game_player: player,
       card: card_def,
       location: location,
-      position_in_stack: (location == :hand || location == :deck) ? i : nil,
+      position_in_stack: (location == :hand || location == :deck) ? (i + (position || 0)) : nil,
       position: position
     )
     # Apply some status for visual check
@@ -111,8 +111,8 @@ if aoe_spell
   )
 end
 
-add_cards(p1, cards, :hand, 3) # Add 3 more random cards
-add_cards(p1, cards, :deck, 10)
+add_cards(p1, cards, :hand, 3, position: 3) # Add 3 more random cards
+add_cards(p1, cards, :deck, 10, position: 0)
 add_cards(p1, cards, :board, 1, position: :center) # 1 monster on field
 add_cards(p1, cards, :graveyard, 2)
 add_cards(p1, cards, :banished, 1)
