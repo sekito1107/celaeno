@@ -1,12 +1,11 @@
 class SurrendersController < ApplicationController
-  def create
-    game_player = current_user.game_players.find_by(game_id: params[:game_id])
+  include GameContextLoader
+  include GameActionHelper
 
-    if game_player
-      game_player.surrender!
-      redirect_to lobby_path, notice: "降伏しました。"
-    else
-      redirect_to lobby_path, alert: "ゲームに参加していません。"
-    end
+  def create
+    @game_player.surrender!
+
+    result = GameActionResult.success(message: "降伏しました。")
+    handle_game_action(result)
   end
 end
