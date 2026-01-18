@@ -264,6 +264,16 @@
   pointer-events: none;
 }
 
+.play-mat-opponent {
+  border-bottom: none;
+  border-top: 1px solid var(--game-border-color);
+  transform: rotate(180deg);
+  padding: 2rem 0; /* padding reset */
+  margin-top: 0;
+  width: 100%;
+  z-index: 0; /* Push to background */
+}
+
 .field-slot:hover {
   border-color: rgba(255,255,255,0.3);
   box-shadow: inset 0 0 15px rgba(139, 0, 0, 0.2);
