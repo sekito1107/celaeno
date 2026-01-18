@@ -5,7 +5,7 @@
 <div class="game-board" 
      data-controller="game--board" 
      data-game--board-game-id-value="<%= @game.id %>"
-     data-action="click->game--board#deselectAll dragover->game--board#dragover drop->game--board#drop game--card:showDetail->game--board#showDetail game--card:hideDetail->game--board#hideDetail game--card:selectCard->game--board#selectCard">
+     data-action="click->game--board#deselectAll dragover->game--board#dragover drop->game--board#drop game--card:showDetail@window->game--board#showDetail game--card:hideDetail@window->game--board#hideDetail game--card:selectCard@window->game--board#selectCard">
   <div class="game-overlay"></div>
   
   <%# Animation Layer (Pointer events none, top z-index) %>
@@ -41,17 +41,7 @@
   <div class="play-mat">
     <%= render Game::FieldComponent.new(game_player: @game_player, viewer: current_user) %>
     
-    <!-- Reserved Spells Zone -->
-    <div class="reserved-spells-zone">
-      <div class="zone-label">RITUAL</div>
-      <div class="reserved-cards-stack">
-        <% @resolving_cards.each_with_index do |card, index| %>
-          <div class="reserved-card-wrapper" style="--stack-index: <%= index %>;">
-              <%= render Game::CardComponent.new(card_entity: card, variant: :resolving) %>
-          </div>
-        <% end %>
-      </div>
-    </div>
+    <%= render Game::ReservedSpellsComponent.new(cards: @resolving_cards) %>
 
     <%= render Game::HandComponent.new(game_player: @game_player, viewer: current_user) %>
   </div>
