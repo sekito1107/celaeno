@@ -320,6 +320,27 @@
   z-index: 0; /* Push to background */
 }
 
+/* Opponent Field Cards: Rotate Upright relative to screen */
+.play-mat-opponent .field-slot .card-wrapper {
+  transform: rotate(180deg);
+}
+
+/* Opponent Field Hover: Maintain Rotation */
+.play-mat-opponent .field-slot:hover .card-wrapper {
+  transform: rotate(180deg) translateY(-20px) scale(1.1) !important;
+  z-index: 100;
+  box-shadow: 0 -10px 20px rgba(0,0,0,0.8); /* Shadow needs flip too */
+}
+
+/* Fix orientation for opponent's deck and field areas (Labels & Numbers) */
+.play-mat-opponent .deck-placeholder,
+.play-mat-opponent .field-graveyard-area,
+.play-mat-opponent .field-banished-area,
+.play-mat-opponent .field-label,
+.play-mat-opponent .deck-count {
+  transform: rotate(180deg) !important;
+}
+
 .field-slot:hover {
   border-color: rgba(255,255,255,0.3);
   box-shadow: inset 0 0 15px rgba(139, 0, 0, 0.2);
