@@ -34,18 +34,28 @@
   gap: 0; 
 }
 
-/* Center area acts as a fixed spacer between growing play mats */
-.center-area {
-  margin: 0.5rem 0;
-  flex-grow: 0; /* Fixed height region */
-  height: 180px; /* Enough for cards */
+/* Reserved Spells Area (Right Side) */
+.reserved-spells-container {
+  position: absolute;
+  right: 2rem;
+  bottom: 240px; /* Above Hand (Hand height ~224px + padding) */
   display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  background: rgba(0, 0, 0, 0.2); /* Slight visual separation */
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-direction: column; /* Stack vertically if multiple */
+  gap: 0.5rem;
+  z-index: 15;
+  pointer-events: none; /* Let clicks pass through unless on card */
+}
+
+.reserved-card-wrapper {
+  pointer-events: auto;
+  transform: scale(0.8); /* Slightly smaller than hand/field */
+  transform-origin: bottom right;
+  transition: transform 0.3s;
+}
+
+.reserved-card-wrapper:hover {
+  transform: scale(1.0);
+  z-index: 20;
 }
 
 /* Remove utility divs from flex flow to prevent unwanted gaps at the top */
@@ -808,3 +818,4 @@
   80% { transform: translate(1px, 1px); }
   100% { transform: translate(0,0); }
 }
+
