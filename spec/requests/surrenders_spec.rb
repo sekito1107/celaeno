@@ -21,7 +21,7 @@ RSpec.describe "Surrenders", type: :request do
       before { sign_in(user) }
 
       context "正常系" do
-        it "降伏が成功し、ロビーへリダイレクトされること" do
+        it "降伏が成功し、ゲーム画面へリダイレクトされること" do
           expect {
             post game_surrender_path(game)
           }.to change { game.reload.status }.from("playing").to("finished")
@@ -34,6 +34,25 @@ RSpec.describe "Surrenders", type: :request do
           post game_surrender_path(game), as: :json
           expect(response).to have_http_status(:ok)
           expect(JSON.parse(response.body)["message"]).to eq("降伏しました。")
+        end
+
+        context "既に終了しているゲームの場合" do
+          let(:finished_game) { create(:game, status: :finished) }
+          let(:finished_gp) { create(:game_player, game: finished_game, user: user, role: :host) }
+          let(:finished_turn) { create(:turn, game: finished_game, turn_number: 1) }
+
+          it "エラーにならず、降伏完了メッセージが表示されること" do
+            # game_context_loaderがデータを取得できるようにデータ作成
+            finished_gp
+            finished_turn
+
+            post game_surrender_path(finished_game)
+
+            expect(response).to redirect_to(game_path(finished_game))
+            expect(flash[:notice]).to eq("降伏しました。")
+            # ステータスはfinishedのまま変わらない
+            expect(finished_game.reload.status).to eq("finished")
+          end
         end
       end
 
