@@ -75,8 +75,19 @@ targeted_spell = cards.find { |c| c.key_code == "carcosa_vision" }  # Poison tar
 aoe_spell = cards.find { |c| c.key_code == "tidal_wave" }           # 2 dmg to all enemies (non-targeted)
 
 # Fallback just in case seeds changed
-targeted_spell ||= cards.find { |c| c.key_code == "yellow_sign" }
-aoe_spell ||= cards.find { |c| c.key_code == "kings_presence" }
+unless targeted_spell
+  puts "Warning: 'carcosa_vision' not found. Trying 'yellow_sign'..."
+  targeted_spell = cards.find { |c| c.key_code == "yellow_sign" }
+end
+
+unless aoe_spell
+  puts "Warning: 'tidal_wave' not found. Trying 'kings_presence'..."
+  aoe_spell = cards.find { |c| c.key_code == "kings_presence" }
+end
+
+puts "Warning: Unit card not found!" unless unit_card
+puts "Warning: Targeted spell not found (even fallback)!" unless targeted_spell
+puts "Warning: AoE spell not found (even fallback)!" unless aoe_spell
 
 if unit_card
   GameCard.create!(
