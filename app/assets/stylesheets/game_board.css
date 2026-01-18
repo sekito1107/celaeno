@@ -3,6 +3,7 @@
 :root {
   --card-width: 120px;
   --card-height: 160px;
+  --hand-area-height: 180px;
   --slot-gap: 1.5rem;
   --game-primary-dark: #050505;
   --game-accent-red: #8b0000;
@@ -38,7 +39,7 @@
 .reserved-spells-zone {
   position: absolute;
   right: 2rem;
-  bottom: 250px; /* Just above hand */
+  bottom: calc(var(--hand-area-height) + 5rem); /* Dynamic positioning above hand */
   width: 140px;
   min-height: 180px;
   border: 1px dashed rgba(255, 255, 255, 0.2);
@@ -86,7 +87,6 @@
 .reserved-card-wrapper:hover {
   transform: scale(1.1) rotate(-2deg); /* Removed large TranslateX */
   z-index: 50;
-  margin-top: -120px; /* Maintain overlap */
   box-shadow: 0 0 20px rgba(0,0,0,0.8); /* Add glow instead of movement for focus */
 }
 
@@ -138,7 +138,7 @@
 /* Hand Container - Compact */
 .hand-container {
   /* Update local variables for container calculations */
-  --card-height: 180px; /* Reduced from 224px */
+  --card-height: var(--hand-area-height); /* Consistent with root */
   
   display: flex;
   justify-content: center;
