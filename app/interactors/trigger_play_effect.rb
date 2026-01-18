@@ -3,7 +3,6 @@ class TriggerPlayEffect
 
   def call
     game_card = context.game_card
-    game_card = context.game_card
     # スペルは解決フェーズで発動するため、ここでは発動しない
     return if game_card.card.spell?
 
