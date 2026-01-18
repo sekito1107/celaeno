@@ -105,6 +105,8 @@ export default class extends Controller {
 
   // カードプレイ（クリック版）
   async playCard(event) {
+    event.stopPropagation() // バブリング防止 (Card -> Slotの重複発火を防ぐ)
+
     if (!this.selectedCardId) return
 
     const targetPosition = event.currentTarget.dataset.position
@@ -121,6 +123,8 @@ export default class extends Controller {
              targetId = cardElement.getAttribute('data-game--card-id-value')
         }
     }
+    
+    console.log(`Playing card ${this.selectedCardId} (Type: ${this.selectedCardType}) -> Target: ${targetId}, Position: ${targetPosition}`)
 
     if (this.selectedCardType === "unit" && !targetPosition) return
     
@@ -142,6 +146,13 @@ export default class extends Controller {
     const targetPosition = event.currentTarget.dataset.position
 
     let targetId = this.getTargetId(event.currentTarget)
+    // スロット自体にIDがない場合、内部のカードコンポーネントを探す (DropはSlot上で起きるので)
+    if (!targetId) {
+        const cardElement = event.currentTarget.querySelector('[data-game--card-id-value]')
+        if (cardElement) {
+             targetId = cardElement.getAttribute('data-game--card-id-value')
+        }
+    }
 
     if (!cardId) return
 
