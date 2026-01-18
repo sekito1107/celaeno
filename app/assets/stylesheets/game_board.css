@@ -30,7 +30,19 @@
   display: flex;
   flex-direction: column;
   /* padding-bottom removed as requested */
-  gap: 1rem; /* Ensure visual separation between mats */
+  /* gap: 0; -- Controlled by .center-area height and .play-mat flex-grow */
+  gap: 0; 
+}
+
+/* Center area acts as a fixed spacer between growing play mats */
+.center-area {
+  margin: 0.1rem 0;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  min-height: 100px;
 }
 
 /* Remove utility divs from flex flow to prevent unwanted gaps at the top */
@@ -68,6 +80,10 @@
   z-index: 2;
   backdrop-filter: blur(12px); /* Increased blur for premium glass feel */
   flex-shrink: 0; /* Prevent shrinking */
+  flex-grow: 1; /* Expand to fill available vertical space */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Anchor content to the "bottom" (screen edge) */
   margin-bottom: 0;
 }
 
@@ -77,6 +93,7 @@
   transform: rotate(180deg);
   padding: 2rem 0; /* padding reset */
   margin-top: 0;
+  width: 100%;
 }
 
 .play-mat-opponent .field-slots-area {
