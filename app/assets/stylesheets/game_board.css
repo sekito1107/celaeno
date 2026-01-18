@@ -589,6 +589,14 @@
   100% { opacity: 1; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .sanity-critical .hero-avatar,
+  .sanity-critical .san-badge .stat-value {
+    animation: none;
+    filter: none; /* Remove intense color shifts if needed, or keep static filter */
+  }
+}
+
 /* Status Bar Positioning */
 .status-bar-wrapper {
   position: fixed;
