@@ -4,6 +4,7 @@
   --card-width: 120px;
   --card-height: 160px;
   --hand-area-height: 180px;
+  --reserved-card-overlap: -120px;
   --slot-gap: 1.5rem;
   --game-primary-dark: #050505;
   --game-accent-red: #8b0000;
@@ -74,7 +75,7 @@
 .reserved-card-wrapper {
   position: relative;
   transform-origin: center top;
-  margin-top: -120px; /* Overlap heavily */
+  margin-top: var(--reserved-card-overlap); /* Overlap heavily */
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   filter: drop-shadow(0 -4px 6px rgba(0,0,0,0.5));
 }
@@ -271,7 +272,7 @@
 
 /* Opponent Hand: Absolute positioning to push to top edge */
 .play-mat-opponent .hand-container {
-  display: flex !important; /* Force flex */
+  display: flex; /* Force flex */
   position: absolute;
   bottom: -6rem; /* Push visually to top (rotated coordinates) */
   left: 0;
@@ -281,7 +282,7 @@
   z-index: 10;
   justify-content: center;
   overflow: visible;
-  pointer-events: none; /* Let clicks pass through if needed, but we might want hover info later */
+  pointer-events: auto; /* Enable interaction with cards */
 }
 
 /* Fan Effect Logic */
@@ -300,14 +301,10 @@
 
   transform-origin: center bottom 200px; /* Rotate from a distant point */
   transform: rotate(var(--rotate-deg)) translateY(var(--y-offset));
-  margin-left: -40px !important; /* Overlap heavily */
+  margin-left: -40px; /* Overlap heavily */
   
   /* Reset previous shadow/hover */
   box-shadow: -2px 0 10px rgba(0,0,0,0.8);
-}
-/* Allow interaction */
-.play-mat-opponent .hand-container {
-  pointer-events: auto;
 }
 
 .play-mat-opponent {
@@ -327,7 +324,7 @@
 
 /* Opponent Field Hover: Maintain Rotation */
 .play-mat-opponent .field-slot:hover .card-wrapper {
-  transform: rotate(180deg) translateY(-20px) scale(1.1) !important;
+  transform: rotate(180deg) translateY(-20px) scale(1.1);
   z-index: 100;
   box-shadow: 0 -10px 20px rgba(0,0,0,0.8); /* Shadow needs flip too */
 }
@@ -337,7 +334,12 @@
 .play-mat-opponent .field-graveyard-area,
 .play-mat-opponent .field-banished-area,
 .play-mat-opponent .deck-count {
-  transform: rotate(180deg) !important;
+  transform: rotate(180deg);
+}
+
+.play-mat-opponent .field-graveyard-area:hover,
+.play-mat-opponent .field-banished-area:hover {
+  transform: rotate(180deg) scale(1.05);
 }
 
 /* Fix Labels separately to ensure they are above the slot visually */
@@ -438,8 +440,7 @@
 
 /* Resolving Card Wrapper needs access to variables or local define */
 .resolving-card-wrapper {
-  --card-width: 120px;
-  --card-height: 160px;
+  /* Using root variables directly */
   width: var(--card-width);
   height: var(--card-height);
   display: flex;
