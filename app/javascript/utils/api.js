@@ -3,10 +3,12 @@ import { FetchRequest } from "@rails/request.js"
 export const api = {
   async post(url, body = {}) {
     const request = new FetchRequest("post", url, {
-      body: JSON.stringify(body),
+      body: body,
+      contentType: "application/json",
       responseKind: "json"
     })
     
+    // 成功時も失敗時もFetchRequestがJSONをパースしてくれる
     const response = await request.perform()
     if (response.ok) {
       return await response.json
