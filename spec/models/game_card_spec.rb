@@ -18,6 +18,26 @@ RSpec.describe GameCard, type: :model do
     end
   end
 
+  describe 'validations' do
+    context 'target_game_card validation' do
+      let(:other_game) { create(:game) }
+      let(:other_game_player) { create(:game_player, game: other_game, user: user) }
+      let(:other_game_card) { create(:game_card, game: other_game, user: user, game_player: other_game_player, card: card) }
+      let(:same_game_card) { create(:game_card, game: game, user: user, game_player: game_player, card: card) }
+
+      it 'is valid when target_game_card is in the same game' do
+        game_card.target_game_card = same_game_card
+        expect(game_card).to be_valid
+      end
+
+      it 'is invalid when target_game_card is in a different game' do
+        game_card.target_game_card = other_game_card
+        expect(game_card).not_to be_valid
+        expect(game_card.errors[:target_game_card]).to include("must belong to same game")
+      end
+    end
+  end
+
   describe '#total_attack' do
     context '数値のみの場合' do
       it '文字列の数値を返すこと' do

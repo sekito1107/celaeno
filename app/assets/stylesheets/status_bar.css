@@ -107,3 +107,86 @@
   50% { box-shadow: 0 0 20px rgba(139, 0, 0, 0.6); }
   100% { box-shadow: 0 0 10px rgba(139, 0, 0, 0.2); }
 }
+
+/* Fixed Controls for Ready Button */
+.status-controls-fixed {
+  position: fixed;
+  left: calc(2rem + 180px); /* Positioned relative to status bar */
+  bottom: 2.5rem; /* Slightly lifted */
+  z-index: 50;
+  display: flex;
+  align-items: center;
+}
+
+/* Connecting Line (Optional aesthetic touch) */
+.status-controls-fixed::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  width: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2));
+  z-index: -1;
+}
+
+.btn-ready {
+  min-width: 140px;
+  height: 48px;
+  background: linear-gradient(135deg, #1a202c, #000000);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: 4px; /* Slight rounding */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover Glow */
+.btn-ready:not(.btn-warning):hover {
+  border-color: #2dd4bf; /* Teal accent */
+  box-shadow: 
+    0 0 15px rgba(45, 212, 191, 0.3),
+    inset 0 0 20px rgba(45, 212, 191, 0.1);
+  color: #fff;
+  text-shadow: 0 0 8px rgba(45, 212, 191, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Active/Waiting State (Warning) */
+.btn-warning {
+  background: repeating-linear-gradient(
+    45deg,
+    #2a0a0a,
+    #2a0a0a 10px,
+    #3f0f0f 10px,
+    #3f0f0f 20px
+  );
+  border: 1px solid #7f1d1d;
+  color: #fca5a5;
+  cursor: default;
+  opacity: 0.9;
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: #7f1d1d; }
+  50% { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-warning {
+    animation: none;
+  }
+}

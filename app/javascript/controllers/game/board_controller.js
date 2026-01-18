@@ -105,6 +105,7 @@ export default class extends Controller {
 
   // カードプレイ（クリック版）
   async playCard(event) {
+    // 選択されていない場合はバブリングさせて deselectAll へ
     if (!this.selectedCardId) return
 
     const targetPosition = event.currentTarget.dataset.position
@@ -112,9 +113,13 @@ export default class extends Controller {
     // Spellの場合はCardIDをターゲットにする場合がある
     // Unitの場合は位置必須
     
-    let targetId = this.getTargetId(event.currentTarget)
-
+    let targetId = this._resolveTargetId(event.currentTarget)
+    
+    // バリデーション: ユニットは位置指定必須（なければ無効プレイとしてバブリングさせる）
     if (this.selectedCardType === "unit" && !targetPosition) return
+    
+    // 有効なプレイと判断したらイベントを止める
+    event.stopPropagation()
     
     await this.performCardPlay(this.selectedCardId, targetPosition, targetId)
     this.deselectAll()
@@ -133,7 +138,7 @@ export default class extends Controller {
     const cardType = event.dataTransfer.getData("application/x-card-type")
     const targetPosition = event.currentTarget.dataset.position
 
-    let targetId = this.getTargetId(event.currentTarget)
+    let targetId = this._resolveTargetId(event.currentTarget)
 
     if (!cardId) return
 
@@ -141,6 +146,20 @@ export default class extends Controller {
     if (cardType === "unit" && !targetPosition) return
     
     await this.performCardPlay(cardId, targetPosition, targetId)
+  }
+
+  // TargetID解決ヘルパー
+  _resolveTargetId(element) {
+    let targetId = this.getTargetId(element)
+
+    // スロット自体にIDがない場合、内部のカードコンポーネントを探す
+    if (!targetId) {
+        const cardElement = element.querySelector('[data-game--card-id-value]')
+        if (cardElement) {
+             targetId = cardElement.getAttribute('data-game--card-id-value')
+        }
+    }
+    return targetId
   }
 
   // API実行用プライベートメソッド
@@ -162,8 +181,7 @@ export default class extends Controller {
             window.location.reload()
         }
     } catch (error) {
-        console.error("Card play failed:", error)
-        alert(error.message || "プレイに失敗しました")
+        // Log failure but do not alert user (e.g. invalid move)
     }
   }
 
@@ -173,5 +191,19 @@ export default class extends Controller {
         return element.getAttribute("data-game--card-id-value")
     }
     return null
+  }
+
+  // 準備完了トグル
+  async ready(event) {
+    try {
+        const response = await api.post(`/games/${this.gameIdValue}/ready_states`, {})
+        
+        if (response.status === "success") {
+            window.location.reload()
+        }
+    } catch (error) {
+        console.error("Ready toggle failed:", error)
+        alert(error.message || "処理に失敗しました")
+    }
   }
 }

@@ -1,8 +1,17 @@
 # frozen_string_literal: true
 
 class Game::StatusBarComponent < ApplicationComponent
-  def initialize(game_player:)
+  def initialize(game_player:, controls: false)
     @game_player = game_player
+    @controls = controls
+  end
+
+  def controls?
+    @controls
+  end
+
+  def ready?
+    !!@game_player.ready
   end
 
   def hp

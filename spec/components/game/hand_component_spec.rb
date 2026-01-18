@@ -20,6 +20,7 @@ RSpec.describe Game::HandComponent, type: :component do
 
       expect(page).to have_css(".hand-container")
       expect(page).to have_css(".hand-card-wrapper", count: 3)
+      expect(page).to have_css(".hand-card-wrapper.card-interactive", count: 3)
       expect(page).not_to have_css(".card-back")
     end
   end

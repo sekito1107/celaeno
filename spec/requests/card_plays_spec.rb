@@ -41,7 +41,7 @@ RSpec.describe "CardPlays", type: :request do
             game: game,
             turn: turn,
             game_player: player_gp,
-            game_card_id: game_card.id.to_s,
+            game_card: game_card,
             position: "1",
             target_id: nil
           )

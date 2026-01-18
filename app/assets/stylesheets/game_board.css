@@ -3,6 +3,8 @@
 :root {
   --card-width: 120px;
   --card-height: 160px;
+  --hand-area-height: 180px;
+  --reserved-card-overlap: -120px;
   --slot-gap: 1.5rem;
   --game-primary-dark: #050505;
   --game-accent-red: #8b0000;
@@ -34,16 +36,62 @@
   gap: 0; 
 }
 
-/* Center area acts as a fixed spacer between growing play mats */
-.center-area {
-  margin: 0.1rem 0;
-  flex-grow: 1;
+/* Reserved Spells Zone (Ritual Area) */
+.reserved-spells-zone {
+  position: absolute;
+  right: 2rem;
+  bottom: calc(var(--hand-area-height) + 5rem); /* Dynamic positioning above hand */
+  width: 140px;
+  min-height: 180px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  min-height: 100px;
+  padding: 1rem 0;
+  z-index: 10;
+  backdrop-filter: blur(4px);
 }
+
+.zone-label {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.reserved-cards-stack {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Stack overlap logic handled in wrapper */
+}
+
+.reserved-card-wrapper {
+  position: relative;
+  transform-origin: center top;
+  margin-top: var(--reserved-card-overlap); /* Overlap heavily */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: drop-shadow(0 -4px 6px rgba(0,0,0,0.5));
+}
+
+.reserved-card-wrapper:first-child {
+  margin-top: 0;
+}
+
+/* Hover Effect: Fan out slightly/Pop out - stabilized to prevent flickering */
+.reserved-card-wrapper:hover {
+  transform: scale(1.1) rotate(-2deg); /* Removed large TranslateX */
+  z-index: 50;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8); /* Add glow instead of movement for focus */
+}
+
+/* Empty State Indication if needed (handled by min-height/border) */
 
 /* Remove utility divs from flex flow to prevent unwanted gaps at the top */
 .game-overlay,
@@ -69,122 +117,72 @@
 
 /* プレイエリア（マット） */
 .play-mat {
-  background-color: rgba(20, 20, 25, 0.2); /* Even more transparent */
+  background-color: rgba(20, 20, 25, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 
     0 10px 30px rgba(0, 0, 0, 0.9),
-    inset 0 0 50px rgba(0,0,0,0.5); /* Deep inner shadow */
-  padding: 2rem 0 4rem 0; /* Increase bottom padding for hand cards */
+    inset 0 0 50px rgba(0,0,0,0.5);
+  padding: 0.5rem 0; /* Minimal padding */
   position: relative;
   z-index: 2;
-  backdrop-filter: blur(12px); /* Increased blur for premium glass feel */
-  flex-shrink: 0; /* Prevent shrinking */
-  flex-grow: 1; /* Expand to fill available vertical space */
+  backdrop-filter: blur(12px);
+  flex-shrink: 1; /* Allow shrinking */
+  flex-grow: 1; /* Grow to fill screen */
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Anchor content to the "bottom" (screen edge) */
+  justify-content: space-between; /* Push Field to top, Hand to bottom */
   margin-bottom: 0;
+  min-height: 0; /* Important for flex shrinking */
 }
 
-.play-mat-opponent {
-  border-bottom: none;
-  border-top: 1px solid var(--game-border-color);
-  transform: rotate(180deg);
-  padding: 2rem 0; /* padding reset */
-  margin-top: 0;
-  width: 100%;
-}
-
-.play-mat-opponent .field-slots-area {
-  flex-direction: row-reverse;
-}
-
-/* Opponent Field Cards: Rotate Upright */
-.play-mat-opponent .field-slot .card-wrapper {
-  transform: rotate(180deg);
-}
-/* Opponent Field Hover: Maintain Rotation */
-.play-mat-opponent .field-slot:hover .card-wrapper {
-  transform: rotate(180deg) translateY(-20px) scale(1.1) !important;
-  z-index: 100;
-}
-
-/* Fix orientation for opponent's deck and field areas (Labels & Numbers) */
-.play-mat-opponent .deck-placeholder,
-.play-mat-opponent .field-graveyard-area,
-.play-mat-opponent .field-banished-area {
-  transform: rotate(180deg) !important;
-}
-
-
-
-/* 手札コンポーネント */
+/* Hand Container - Compact */
 .hand-container {
   /* Update local variables for container calculations */
-  --card-height: 224px;
+  --card-height: var(--hand-area-height); /* Consistent with root */
   
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* カードを下揃え */
-  gap: 0; /* 重ねるために gap を 0 に */
+  align-items: flex-end;
+  gap: 0;
   padding: 0.5rem 1rem;
-  min-height: calc(var(--card-height) + 2rem);
+  /* Default relative for flow, overridden for players below */
   width: 100%;
   perspective: 1000px;
 }
 
+/* Allow interaction with cards in fixed container */
+.hand-container .hand-card-wrapper {
+  pointer-events: auto;
+}
+
 .hand-card-wrapper {
-  /* Explicitly larger size for hand cards */
-  --card-width: 160px;
-  --card-height: 224px;
+  /* Explicitly larger size for hand cards - Increased as requested */
+  --card-width: 150px; /* Increased from 130px */
+  --card-height: 210px; /* Increased from 180px */
   width: var(--card-width);
   height: var(--card-height);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  margin-left: -5px; /* Cards overlap slightly less */
+  margin-left: -5px;
   position: relative;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.5); /* 重なりの影 */
+  box-shadow: -2px 0 5px rgba(0,0,0,0.5);
 }
 
-/* 最初のカードは左マージン不要 */
-.hand-card-wrapper:first-child {
-  margin-left: 0;
-}
-
-.hand-card-wrapper:hover {
-  transform: translateY(-30px) scale(1.1) rotate(0deg) !important; /* ホバー時は強調 */
-  z-index: 100;
-  margin-left: 10px; /* ホバー時に隣との間隔を広げる */
-  margin-right: 10px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-}
-
-/* 相手の手札 (逆向き) */
-.hand-card-wrapper.opponent-card {
-  margin-left: -5px;
-  box-shadow: none;
-}
-.hand-card-wrapper.opponent-card:hover {
-  transform: none; /* 相手の手札はホバーしても動かない */
-  margin-left: -5px;
-  margin-right: 0;
-}
-
-/* フィールドコンポーネント */
+/* Field Container - Compact but larger cards */
 .field-container {
-  /* Slightly larger to fit detailed card design better */
-  --card-width: 140px;
-  --card-height: 196px;
-  --slot-gap: 1rem; /* Reduced gap */
+  /* Increased size to fill available space */
+  --card-width: 130px; /* Increased from 114px */
+  --card-height: 182px; /* Increased from 160px */
+  --slot-gap: 0.75rem;
 
   display: grid;
-  grid-template-columns: 300px 1fr 300px; /* Symmetric columns (300px fits Grave+Void) */
-  justify-items: center;
-  gap: 1rem;
+  grid-template-columns: 280px auto 280px; /* SYMMETRY IS REQUIRED for unit alignment */
+  justify-content: center;
+  gap: 1rem; /* Reduced gap slightly */
   width: 100%;
-  max-width: 1200px; /* Increased to prevent overflow misalignment */
+  max-width: 1150px; /* Tighter width to pull sides in away from Detail Panel */
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   align-items: center;
 }
 
@@ -272,6 +270,105 @@
   pointer-events: none;
 }
 
+/* Opponent Hand: Absolute positioning to push to top edge */
+.play-mat-opponent .hand-container {
+  display: flex; /* Force flex */
+  position: absolute;
+  bottom: -6rem; /* Push visually to top (rotated coordinates) */
+  left: 0;
+  right: 0;
+  height: 120px;
+  align-items: flex-end; /* Align to "bottom" of container which is top of screen */
+  z-index: 10;
+  justify-content: center;
+  overflow: visible;
+  pointer-events: auto; /* Enable interaction with cards */
+}
+
+/* Fan Effect Logic */
+.play-mat-opponent .hand-card-wrapper.opponent-card {
+  /*
+     Calculate rotation based on index (--i) and total (--total).
+     Center is (total - 1) / 2.
+     Offset = i - center.
+     Rotate = offset * 5deg.
+     TranslateY = abs(offset) * 5px (arch effect).
+  */
+  --center: calc((var(--total) - 1) / 2);
+  --offset: calc(var(--i) - var(--center));
+  --rotate-deg: calc(var(--offset) * 8deg); /* Fan spread angle */
+  --y-offset: calc(max(var(--offset), -1 * var(--offset)) * 12px); /* Arch height */
+
+  transform-origin: center bottom 200px; /* Rotate from a distant point */
+  transform: rotate(var(--rotate-deg)) translateY(var(--y-offset));
+  margin-left: -40px; /* Overlap heavily */
+  
+  /* Reset previous shadow/hover */
+  box-shadow: -2px 0 10px rgba(0,0,0,0.8);
+}
+
+.play-mat-opponent {
+  border-bottom: none;
+  border-top: 1px solid var(--game-border-color);
+  transform: rotate(180deg);
+  padding: 2rem 0; /* padding reset */
+  margin-top: 0;
+  width: 100%;
+  z-index: 0; /* Push to background */
+}
+
+/* Opponent Field Cards: Rotate Upright relative to screen */
+.play-mat-opponent .field-slot .card-wrapper {
+  transform: rotate(180deg);
+}
+
+/* Opponent Field Hover: Maintain Rotation */
+.play-mat-opponent .field-slot:hover .card-wrapper {
+  transform: rotate(180deg) translateY(-20px) scale(1.1);
+  z-index: 100;
+  box-shadow: 0 -10px 20px rgba(0,0,0,0.8); /* Shadow needs flip too */
+}
+
+/* Fix orientation for opponent's deck and field areas */
+.play-mat-opponent .deck-placeholder,
+.play-mat-opponent .field-graveyard-area,
+.play-mat-opponent .field-banished-area,
+.play-mat-opponent .deck-count {
+  transform: rotate(180deg);
+}
+
+.play-mat-opponent .field-graveyard-area:hover,
+.play-mat-opponent .field-banished-area:hover {
+  transform: rotate(180deg) scale(1.05);
+}
+
+/* Maintain rotation for selected opponent cards */
+.play-mat-opponent .field-slot .card-wrapper.selected {
+  transform: rotate(180deg) translateY(-32px) scale(1.15) !important;
+  /* Box shadow and border color are handled by card.css */
+} 
+
+/* Fix Labels separately to ensure they are above the slot visually */
+.play-mat-opponent .field-label {
+  transform: rotate(0deg); /* Text itself is upright via parent rotation? No, parent is 180. */
+  /* Steps:
+     1. Mat is 180.
+     2. Area is 180 (Total 360 = Upright).
+     3. Label is inside Area. So it inherits 360 (Upright).
+     4. Label position: top: -1.2rem relative to Area.
+        Since Area is 360 (visually upright), top is top.
+        So Label should be above.
+     If user says "Still inverted", maybe my Area rotation didn't work.
+     I will reinforce the rule.
+  */
+}
+
+/* Explicitly fix icons inside empty states if Area rotation fails */
+.play-mat-opponent .empty-graveyard .icon,
+.play-mat-opponent .empty-banished .icon {
+  transform: rotate(0deg); /* If area is rotated, this is fine. If not, this does nothing. */
+}
+
 .field-slot:hover {
   border-color: rgba(255,255,255,0.3);
   box-shadow: inset 0 0 15px rgba(139, 0, 0, 0.2);
@@ -335,8 +432,8 @@
 
 /* カード裏面 */
 .card-back {
-  width: 100%;
-  height: 100%;
+  width: var(--card-width);
+  height: var(--card-height);
   border-radius: 8px; /* Match card wrapper radius */
   box-shadow: 0 2px 5px rgba(0,0,0,0.5);
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("cards/card_back_ancient.png");
@@ -344,6 +441,17 @@
   background-position: center;
   background-repeat: no-repeat;
   border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+  background-color: #1f2937; /* Fallback dark gray */
+}
+
+/* Resolving Card Wrapper needs access to variables or local define */
+.resolving-card-wrapper {
+  /* Using root variables directly */
+  width: var(--card-width);
+  height: var(--card-height);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 
@@ -488,6 +596,14 @@
   100% { opacity: 1; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .sanity-critical .hero-avatar,
+  .sanity-critical .san-badge .stat-value {
+    animation: none;
+    filter: none; /* Remove intense color shifts if needed, or keep static filter */
+  }
+}
+
 /* Status Bar Positioning */
 .status-bar-wrapper {
   position: fixed;
@@ -600,6 +716,19 @@
   padding: 1rem;
   min-height: 200px;
 }
+
+/* Fix: Do not apply selected state visuals (transform, etc) to cards in modal grid */
+/* This prevents layout breakage while keeping the "pinning" logic active */
+.modal-grid .card-wrapper.selected {
+  transform: none !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.6) !important; /* Reset to default shadow */
+  border-color: #333 !important; /* Reset to default border or keep it subtle */
+  z-index: auto !important;
+}
+
+/* Optional: Add a very subtle indicator if needed, e.g. opacity */
+/* But user asked to distinctively NOT emphasize it. */
+
 
 .modal-close-btn {
   background: none;
@@ -793,3 +922,4 @@
   80% { transform: translate(1px, 1px); }
   100% { transform: translate(0,0); }
 }
+

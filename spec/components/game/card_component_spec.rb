@@ -55,6 +55,48 @@ RSpec.describe Game::CardComponent, type: :component do
           expect(page).not_to have_css(".simple-frame")
         end
       end
+
+      context "Interaction Logic" do
+        it "has click action by default (Board Slot)" do
+          render_inline(described_class.new(card_entity: game_card, variant: :field))
+          expect(page.find(".card-wrapper")["data-action"]).to include("click->game--card#click")
+        end
+
+        context "when in graveyard (Pile Top)" do
+          before do
+            # Mock location checks since state management might be complex in specs
+            allow(game_card).to receive(:location_graveyard?).and_return(true)
+            allow(game_card).to receive(:location_banished?).and_return(false)
+          end
+
+          it "does NOT have click action when variant is field (Pile View)" do
+             render_inline(described_class.new(card_entity: game_card, variant: :field))
+             action = page.find(".card-wrapper")["data-action"]
+             expect(action).not_to include("click->game--card#click")
+             expect(action).to include("mouseenter->game--card#mouseenter")
+             expect(page.find(".card-wrapper")["draggable"]).to eq("false")
+          end
+
+          it "DOES have click action when variant is list (Modal View)" do
+             render_inline(described_class.new(card_entity: game_card, variant: :list))
+             expect(page.find(".card-wrapper")["data-action"]).to include("click->game--card#click")
+          end
+        end
+
+        context "when resolving (Reserved Spell)" do
+          it "does HAVE click action but NOT draggable capability" do
+            render_inline(described_class.new(card_entity: game_card, variant: :resolving))
+            element = page.find(".card-wrapper")
+            action = element["data-action"]
+
+            expect(action).to include("click->game--card#click")
+            expect(action).not_to include("dragstart->game--card#dragstart")
+            expect(element["draggable"]).to eq("false")
+            # Should still have hover effects
+            expect(action).to include("mouseenter->game--card#mouseenter")
+          end
+        end
+      end
   end
   end
 end
