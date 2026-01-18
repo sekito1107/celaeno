@@ -14,6 +14,7 @@ class GameCard < ApplicationRecord
 
   validates :user_id, :game_player_id, presence: true
   validate :user_matches_game_player
+  validate :target_game_card_same_game
 
   before_validation :initialize_stats, on: :create
 
@@ -150,6 +151,13 @@ class GameCard < ApplicationRecord
 
     if user_id != game_player.user_id
         errors.add(:user_id, "must match the user of the associated game_player")
+    end
+  end
+
+  def target_game_card_same_game
+    return if target_game_card_id.nil?
+    if target_game_card&.game_id != game_id
+      errors.add(:target_game_card, "must belong to same game")
     end
   end
 
