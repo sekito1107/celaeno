@@ -18,7 +18,25 @@ game_ids = Game.where(status: [ :matching, :playing ])
                .distinct
                .pluck(:id)
 
-Game.where(id: game_ids).destroy_all
+if game_ids.any?
+  puts "Cleaning up old games: #{game_ids.inspect}"
+
+  # 1. Nullify self-referential FKs to break cycles
+  GameCard.where(game_id: game_ids).update_all(target_game_card_id: nil)
+
+  # 2. Delete child records (leaf nodes)
+  GameCardModifier.where(game_card_id: GameCard.where(game_id: game_ids)).delete_all
+  Move.where(turn_id: Turn.where(game_id: game_ids)).delete_all
+  BattleLog.where(turn_id: Turn.where(game_id: game_ids)).delete_all
+
+  # 3. Delete intermediate records
+  GameCard.where(game_id: game_ids).delete_all
+  Turn.where(game_id: game_ids).delete_all
+  GamePlayer.where(game_id: game_ids).delete_all
+
+  # 4. Delete root
+  Game.where(id: game_ids).delete_all
+end
 
 # 3. Create Game
 game = Game.create!(status: :playing)
@@ -57,8 +75,8 @@ def add_cards(player, cards, location, count, position: nil)
       game_player: player,
       card: card_def,
       location: location,
-      position_in_stack: (location == :hand || location == :deck) ? (i + (position || 0)) : nil,
-      position: position
+      position_in_stack: (location == :hand || location == :deck) ? (i + (position.is_a?(Integer) ? position : 0)) : nil,
+      position: (location == :board) ? position : nil
     )
     # Apply some status for visual check
     # TODO: Apply status modifiers (stun, etc.) for visual testing once supported
@@ -71,13 +89,13 @@ puts "Populating decks and hands..."
 # Ensure at least 1 Unit and 1 Spell in hand
 unit_card = cards.find { |c| c.card_type == "unit" }
 # Ensure distinct spell types for testing
-targeted_spell = cards.find { |c| c.key_code == "carcosa_vision" }  # Poison target
+targeted_spell = cards.find { |c| c.key_code == "call_of_the_deep" }  # 3 dmg target
 aoe_spell = cards.find { |c| c.key_code == "tidal_wave" }           # 2 dmg to all enemies (non-targeted)
 
 # Fallback just in case seeds changed
 unless targeted_spell
-  puts "Warning: 'carcosa_vision' not found. Trying 'yellow_sign'..."
-  targeted_spell = cards.find { |c| c.key_code == "yellow_sign" }
+  puts "Warning: 'call_of_the_deep' not found. Trying 'cthulhu_dream'..."
+  targeted_spell = cards.find { |c| c.key_code == "cthulhu_dream" }
 end
 
 unless aoe_spell
