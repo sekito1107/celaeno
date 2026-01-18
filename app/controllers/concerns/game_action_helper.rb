@@ -1,6 +1,5 @@
 module GameActionHelper
   extend ActiveSupport::Concern
-
   private
 
   def handle_game_action(result, success_message: nil)
