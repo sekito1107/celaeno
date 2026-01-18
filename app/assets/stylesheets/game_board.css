@@ -127,7 +127,7 @@
   z-index: 2;
   backdrop-filter: blur(12px);
   flex-shrink: 1; /* Allow shrinking */
-  flex-grow: 1;
+  flex-grow: 0; /* STOP growing, pack to center */
   display: flex;
   flex-direction: column;
   justify-content: center; /* Center content */
