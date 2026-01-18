@@ -30,6 +30,10 @@ p2 = GamePlayer.create!(game: game, user: user2, role: :guest, hp: 18, san: 15) 
 
 puts "Created Players"
 
+# 4.5 Create First Turn
+Turn.create!(game: game, turn_number: 1, status: :planning)
+puts "Created First Turn"
+
 # 5. Populate Cards
 # Fetch some card definitions from DB
 cards = Card.all.to_a
@@ -64,7 +68,50 @@ end
 puts "Populating decks and hands..."
 
 # Player 1
-add_cards(p1, cards, :hand, 5)
+# Ensure at least 1 Unit and 1 Spell in hand
+unit_card = cards.find { |c| c.card_type == "unit" }
+# Ensure distinct spell types for testing
+targeted_spell = cards.find { |c| c.key_code == "carcosa_vision" }  # Poison target
+aoe_spell = cards.find { |c| c.key_code == "tidal_wave" }           # 2 dmg to all enemies (non-targeted)
+
+# Fallback just in case seeds changed
+targeted_spell ||= cards.find { |c| c.key_code == "yellow_sign" }
+aoe_spell ||= cards.find { |c| c.key_code == "kings_presence" }
+
+if unit_card
+  GameCard.create!(
+      game: p1.game,
+      user: p1.user,
+      game_player: p1,
+      card: unit_card,
+      location: :hand,
+      position_in_stack: 0
+  )
+end
+
+if targeted_spell
+  GameCard.create!(
+      game: p1.game,
+      user: p1.user,
+      game_player: p1,
+      card: targeted_spell,
+      location: :hand,
+      position_in_stack: 1
+  )
+end
+
+if aoe_spell
+  GameCard.create!(
+      game: p1.game,
+      user: p1.user,
+      game_player: p1,
+      card: aoe_spell,
+      location: :hand,
+      position_in_stack: 2
+  )
+end
+
+add_cards(p1, cards, :hand, 3) # Add 3 more random cards
 add_cards(p1, cards, :deck, 10)
 add_cards(p1, cards, :board, 1, position: :center) # 1 monster on field
 add_cards(p1, cards, :graveyard, 2)
