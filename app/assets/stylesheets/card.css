@@ -173,6 +173,10 @@
   filter: grayscale(100%) brightness(0.8);
 }
 
+.card-banished {
+  filter: grayscale(100%) brightness(0.4) opacity(0.8);
+}
+
 .simple-frame {
   position: relative;
   width: 100%;

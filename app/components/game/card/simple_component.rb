@@ -29,6 +29,7 @@ class Game::Card::SimpleComponent < Game::Card::BaseComponent
         classes = [ "card-wrapper", "card-simple" ]
         classes << "card-field" if variant_field?
         classes << "card-graveyard" if graveyard?
+        classes << "card-banished" if banished?
         classes.join(" ")
       end
 end

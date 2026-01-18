@@ -66,12 +66,14 @@ add_cards(p1, cards, :hand, 5)
 add_cards(p1, cards, :deck, 10)
 add_cards(p1, cards, :board, 1, position: :center) # 1 monster on field
 add_cards(p1, cards, :graveyard, 2)
+add_cards(p1, cards, :banished, 1)
 
 # Player 2 (Opponent)
 add_cards(p2, cards, :hand, 4) # Opponent hand hidden usually but distinct count
 add_cards(p2, cards, :deck, 12)
 add_cards(p2, cards, :board, 2, position: :left)
 add_cards(p2, cards, :board, 1, position: :right)
+add_cards(p2, cards, :banished, 1)
 
 puts "Game Setup Complete!"
 puts "---------------------------------------------------"
