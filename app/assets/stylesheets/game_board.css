@@ -156,9 +156,9 @@
 }
 
 .hand-card-wrapper {
-  /* Explicitly larger size for hand cards */
-  --card-width: 130px; /* Reduced from 160px */
-  --card-height: 180px; /* Reduced from 224px */
+  /* Explicitly larger size for hand cards - Increased as requested */
+  --card-width: 150px; /* Increased from 130px */
+  --card-height: 210px; /* Increased from 180px */
   width: var(--card-width);
   height: var(--card-height);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
