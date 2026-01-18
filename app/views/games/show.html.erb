@@ -48,7 +48,7 @@
 
   <!-- Player Area -->
   <div class="status-bar-wrapper player-status">
-    <%= render Game::StatusBarComponent.new(game_player: @game_player) %>
+    <%= render Game::StatusBarComponent.new(game_player: @game_player, controls: true) %>
   </div>
 
   <div class="play-mat">
