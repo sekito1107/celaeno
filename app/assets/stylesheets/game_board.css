@@ -544,6 +544,25 @@
   text-shadow: 0 -1px 0 #005, 0 0 8px #0af, 0 2px 4px #000;
 }
 
+.unit-badge {
+  top: 5px; /* Position at the top */
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  text-shadow: 0 0 5px #000;
+  width: auto; /* Allow width to grow */
+  min-width: 40px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  padding: 2px 8px;
+  height: auto;
+  font-size: 1rem;
+}
+
+.unit-badge .stat-value {
+    font-size: 0.9rem; /* Small font size for count */
+}
+
 
 /* --- Sanity Animations (Progressive) --- */
 
