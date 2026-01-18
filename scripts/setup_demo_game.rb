@@ -12,9 +12,13 @@ end
 puts "Found Users: #{user1.name} (Player), #{user2.name} (Opponent)"
 
 # 2. Cleanup old active games for these users to avoid confusion
-Game.where(status: [ :matching, :playing ]).each do |g|
-  g.game_players.where(user: [ user1, user2 ]).each { |gp| gp.game.destroy }
-end
+game_ids = Game.where(status: [ :matching, :playing ])
+               .joins(:game_players)
+               .where(game_players: { user_id: [ user1.id, user2.id ] })
+               .distinct
+               .pluck(:id)
+
+Game.where(id: game_ids).destroy_all
 
 # 3. Create Game
 game = Game.create!(status: :playing)
@@ -53,9 +57,7 @@ def add_cards(player, cards, location, count, position: nil)
       position: position
     )
     # Apply some status for visual check
-    if location == :board && i % 2 == 0
-      # Mock stun or something if modifiers supported, but for now just basic
-    end
+    # TODO: Apply status modifiers (stun, etc.) for visual testing once supported
   end
 end
 
