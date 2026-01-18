@@ -82,11 +82,12 @@
   margin-top: 0;
 }
 
-/* Hover Effect: Fan out slightly/Pop out */
+/* Hover Effect: Fan out slightly/Pop out - stabilized to prevent flickering */
 .reserved-card-wrapper:hover {
-  transform: translateX(-80px) scale(1.1) rotate(-5deg); /* Pop left to see detail */
+  transform: scale(1.1) rotate(-2deg); /* Removed large TranslateX */
   z-index: 50;
   margin-top: -120px; /* Maintain overlap */
+  box-shadow: 0 0 20px rgba(0,0,0,0.8); /* Add glow instead of movement for focus */
 }
 
 /* Empty State Indication if needed (handled by min-height/border) */
