@@ -39,9 +39,9 @@ class ValidatePlay
       end
 
       # ターゲットの実在確認
-      target = GameCard.find_by(id: context.target_id)
+      target = context.game.game_cards.find_by(id: context.target_id)
       unless target
-         context.fail!(message: "指定された対象が見つかりません")
+        context.fail!(message: "指定された対象が見つかりません")
       end
       context.target = target
     end
