@@ -122,7 +122,7 @@
   box-shadow: 
     0 10px 30px rgba(0, 0, 0, 0.9),
     inset 0 0 50px rgba(0,0,0,0.5);
-  padding: 1rem 0 2rem 0; /* Reduced padding (Bottom 4rem -> 2rem) */
+  padding: 0.5rem 0; /* Minimal padding to bring mats closer */
   position: relative;
   z-index: 2;
   backdrop-filter: blur(12px);
@@ -145,9 +145,21 @@
   align-items: flex-end;
   gap: 0;
   padding: 0.5rem 1rem;
-  min-height: calc(var(--card-height) + 1rem); /* Tighter fit */
+  /* Default relative for flow, overridden for players below */
   width: 100%;
   perspective: 1000px;
+}
+
+/* Player Hand (Not Opponent): Push down visually */
+.play-mat:not(.play-mat-opponent) .hand-container {
+  position: absolute;
+  bottom: -4rem; /* Push down to overlap bottom screen edge */
+  left: 0;
+  right: 0;
+  height: auto;
+  min-height: 140px;
+  z-index: 20; /* Above field */
+  overflow: visible;
 }
 
 .hand-card-wrapper {
