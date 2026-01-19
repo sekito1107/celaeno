@@ -62,4 +62,64 @@ RSpec.describe Game::FieldComponent, type: :component do
       expect(page).to have_css(".field-graveyard-area .empty-graveyard")
     end
   end
+
+  context "ユニット召喚数の表示" do
+    let!(:turn) { create(:turn, game: game, turn_number: 1) }
+
+    it "召喚数と上限が正しく表示されること" do
+      render_inline(described_class.new(game_player: game_player))
+      expect(page).to have_css(".unit-summon-info .value", text: "0 / 1")
+    end
+
+    context "ユニットを召喚している場合" do
+      let(:unit_card) { create(:card, :unit) }
+      let(:game_card) { create(:game_card, game: game, card: unit_card, user: user, game_player: game_player) }
+
+      before do
+        create(:move, turn: turn, user: user, game_card: game_card)
+      end
+
+      it "召喚数が更新されること" do
+        render_inline(described_class.new(game_player: game_player))
+        expect(page).to have_css(".unit-summon-info .value", text: "1 / 1")
+      end
+    end
+  end
+
+  context "召喚予定のユニットがある場合" do
+    let!(:turn) { create(:turn, game: game, turn_number: 1) }
+    let(:hand_card) { create(:game_card, :hand, game: game, user: user, game_player: game_player) }
+
+    before do
+       # Create a Move (schedule unit play)
+       # Using 'center' directly as Move now has enum
+       create(:move, turn: turn, user: user, game_card: hand_card, action_type: :play, position: :center)
+    end
+
+    context "自分が閲覧する場合" do
+      before do
+        # 実際の実装では、ProcessCardMovementによりlocationがresolvingになる
+        hand_card.update!(location: :resolving)
+      end
+
+      it "スロットにカードが表示され、scheduled-summonクラスが付与されていること" do
+        render_inline(described_class.new(game_player: game_player, viewer: user))
+
+        expect(page).to have_css(".field-slot.center-slot .card-wrapper")
+        expect(page).to have_css(".field-slot.center-slot .card-wrapper.scheduled-summon")
+      end
+    end
+
+    context "相手が閲覧する場合" do
+      let(:opponent) { create(:user) }
+      let(:opponent_player) { create(:game_player, game: game, user: opponent) }
+
+      it "スロットは空として表示されること" do
+        render_inline(described_class.new(game_player: game_player, viewer: opponent))
+
+        expect(page).to have_css(".field-slot.center-slot .empty-slot")
+        expect(page).not_to have_css(".field-slot.center-slot .card-wrapper")
+      end
+    end
+  end
 end

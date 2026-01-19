@@ -1,4 +1,4 @@
-# scripts/setup_demo_game.rb
+# scripts/setup_empty_game.rb
 
 unless Rails.env.development? || Rails.env.test?
   abort "This script is allowed only in development/test environments."
@@ -48,7 +48,7 @@ puts "Created Game ID: #{game.id}"
 
 # 4. Create Players
 p1 = GamePlayer.create!(game: game, user: user1, role: :host, hp: 20, san: 20)
-p2 = GamePlayer.create!(game: game, user: user2, role: :guest, hp: 18, san: 15) # p2 slightly damaged
+p2 = GamePlayer.create!(game: game, user: user2, role: :guest, hp: 20, san: 20)
 
 puts "Created Players"
 
@@ -57,7 +57,6 @@ Turn.create!(game: game, turn_number: 1, status: :planning)
 puts "Created First Turn"
 
 # 5. Populate Cards
-# Fetch some card definitions from DB
 cards = Card.all.to_a
 if cards.empty?
   puts "Error: No cards found in DB."
@@ -82,82 +81,36 @@ def add_cards(player, cards, location, count, position: nil)
       position_in_stack: (location == :hand || location == :deck) ? (i + (position.is_a?(Integer) ? position : 0)) : nil,
       position: (location == :board) ? position : nil
     )
-    # Apply some status for visual check
-    # TODO: Apply status modifiers (stun, etc.) for visual testing once supported
   end
 end
 
-puts "Populating decks and hands..."
+puts "Populating decks and hands (Empty Board)..."
 
-# Player 1
-# Ensure at least 1 Unit and 1 Spell in hand
-unit_card = cards.find { |c| c.card_type == "unit" }
-# Ensure distinct spell types for testing
-targeted_spell = cards.find { |c| c.key_code == "call_of_the_deep" }  # 3 dmg target
-aoe_spell = cards.find { |c| c.key_code == "tidal_wave" }           # 2 dmg to all enemies (non-targeted)
-
-# Fallback just in case seeds changed
-unless targeted_spell
-  puts "Warning: 'call_of_the_deep' not found. Trying 'cthulhu_dream'..."
-  targeted_spell = cards.find { |c| c.key_code == "cthulhu_dream" }
-end
-
-unless aoe_spell
-  puts "Warning: 'tidal_wave' not found. Trying 'kings_presence'..."
-  aoe_spell = cards.find { |c| c.key_code == "kings_presence" }
-end
-
-puts "Warning: Unit card not found!" unless unit_card
-puts "Warning: Targeted spell not found (even fallback)!" unless targeted_spell
-puts "Warning: AoE spell not found (even fallback)!" unless aoe_spell
-
-if unit_card
+# Player 1 - Hand has Units to summon
+# Ensure at least 3 Units in hand
+unit_cards = cards.select { |c| c.card_type == "unit" }.sample(3)
+unit_cards.each_with_index do |card, i|
   GameCard.create!(
       game: p1.game,
       user: p1.user,
       game_player: p1,
-      card: unit_card,
+      card: card,
       location: :hand,
-      position_in_stack: 0
+      position_in_stack: i
   )
 end
 
-if targeted_spell
-  GameCard.create!(
-      game: p1.game,
-      user: p1.user,
-      game_player: p1,
-      card: targeted_spell,
-      location: :hand,
-      position_in_stack: 1
-  )
-end
+add_cards(p1, cards, :hand, 2, position: 3) # Add random cards
+add_cards(p1, cards, :deck, 15, position: 0)
 
-if aoe_spell
-  GameCard.create!(
-      game: p1.game,
-      user: p1.user,
-      game_player: p1,
-      card: aoe_spell,
-      location: :hand,
-      position_in_stack: 2
-  )
-end
-
-add_cards(p1, cards, :hand, 3, position: 3) # Add 3 more random cards
-add_cards(p1, cards, :deck, 10, position: 0)
-add_cards(p1, cards, :board, 1, position: :center) # 1 monster on field
-add_cards(p1, cards, :graveyard, 2)
-add_cards(p1, cards, :banished, 1)
+# NO CARDS ON BOARD for Player 1
 
 # Player 2 (Opponent)
-add_cards(p2, cards, :hand, 4) # Opponent hand hidden usually but distinct count
-add_cards(p2, cards, :deck, 12)
-add_cards(p2, cards, :board, 2, position: :left)
-add_cards(p2, cards, :board, 1, position: :right)
-add_cards(p2, cards, :banished, 1)
+add_cards(p2, cards, :hand, 5)
+add_cards(p2, cards, :deck, 15)
+# NO CARDS ON BOARD for Player 2 (or maybe 1 for context, but requests was "empty slots")
 
-puts "Game Setup Complete!"
+puts "Game Setup Complete (Empty Board)!"
 puts "---------------------------------------------------"
 puts "Access URL: http://localhost:3000/games/#{game.id}"
 puts "Login as:   #{user1.email_address} / testpass123"
