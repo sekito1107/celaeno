@@ -110,10 +110,10 @@ export default class extends Controller {
     const amount = log.details.amount
 
     const cardEl = document.querySelector(`#game-card-${cardId}`)
-    if (cardEl) {
-        this._ensureActive(cardEl)
-        this.showDamageNumber(cardEl, amount)
-    }
+    if (!cardEl) return
+
+    this._ensureActive(cardEl)
+    this.showDamageNumber(cardEl, amount)
 
     // カードの振動演出
     return this.applyAnimation(cardEl, "animate-damage", 1000)
@@ -185,16 +185,8 @@ export default class extends Controller {
   }
 
   _findUserIdByPlayerId(playerId) {
-    // 画面内の StatusBar から playerId を持つものを探すか、
-    // Railsから渡された情報を元に解決する。
-    // 今回は簡易的に DOM から userId を直接引く（PlayerId と UserId の紐付けがDOMにあると仮定）
-    // 実際には DataValue で player-id も持たせるのが確実。
-    // 現状の実装では StatusBar に user-id-value があるので、それを利用。
-    // 対戦相手のIDは view で判別可能
-    
-    // TODO: StatusBarComponent に player-id も持たせるとより確実
-    // 同一ユーザー ID の可能性（テスト時等）を考慮し、とりあえずマッチするものを探す
-    const el = document.querySelector(`[data-game--countdown-user-id-value]`)
+    // StatusBarComponent に追加した player-id-value を使って検索
+    const el = document.querySelector(`[data-game--countdown-player-id-value="${playerId}"]`)
     return el ? el.dataset.gameCountdownUserIdValue : null
   }
 
