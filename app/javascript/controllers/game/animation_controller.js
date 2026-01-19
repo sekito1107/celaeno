@@ -34,8 +34,6 @@ export default class extends Controller {
   }
 
   async playLog(log) {
-    console.log("Playing log:", log.event_type, log.details)
-
     switch (log.event_type) {
       case "unit_revealed":
         await this.animateReveal(log)
