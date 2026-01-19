@@ -43,44 +43,11 @@ export default class extends Controller {
   }
 
   async playCombatPhase(combatLogs) {
-    // 画面上の列（Column）ごとにウェーブを分ける
-    // Column 0 (左端): 自分Left & 相手Right
-    // Column 1 (中央): 自分Center & 相手Center
-    // Column 2 (右端): 自分Right & 相手Left
-    const waves = [[], [], []]
-
-    combatLogs.forEach(log => {
-      const pos = log.details.attacker_position
-      const attackerId = log.details.attacker_id
-      const attackerEl = document.querySelector(`#game-card-${attackerId}`)
-      if (!attackerEl) return
-
-      const isOpponent = attackerEl.closest('.play-mat-opponent') !== null
-      
-      let waveIndex = -1
-      if (pos === "left") {
-        waveIndex = isOpponent ? 2 : 0
-      } else if (pos === "center") {
-        waveIndex = 1
-      } else if (pos === "right") {
-        waveIndex = isOpponent ? 0 : 2
-      }
-
-      if (waveIndex !== -1) {
-        waves[waveIndex].push(log)
-      } else {
-        // 例外的なものはWave 0に混ぜる
-        waves[0].push(log)
-      }
-    })
-
-    for (const waveLogs of waves) {
-      if (waveLogs.length > 0) {
-        // 同じ列の攻撃を自分・相手問わず同時に再生
-        await Promise.all(waveLogs.map(log => this.playLog(log)))
-        // 各列の合間に少し待機して視認性を高める
-        await this.delay(300)
-      }
+    // 全ての攻撃を同時に開始する（一斉攻撃）
+    if (combatLogs.length > 0) {
+      await Promise.all(combatLogs.map(log => this.playLog(log)))
+      // 演出終了後に少し待機
+      await this.delay(500)
     }
   }
 
