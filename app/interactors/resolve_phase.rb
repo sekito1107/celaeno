@@ -9,10 +9,17 @@ class ResolvePhase
   # 5. ProcessDeaths: 死亡処理
   # 6. ProcessStatusEffects: 状態異常処理
   # 7. TriggerRoundEndEffects: ラウンド終了時効果（墓地効果を含む）
-  organize PayResolvePhaseCosts,
-           RevealCards,
+  # 1. PaySpellCosts: スペルのコストのみ支払う
+  # 2. ResolveSpells: スペル効果の発動
+  # 3. PayUnitCosts: ユニットのコストを支払う
+  # 4. RevealCards: ユニットの公開・登場
+  # 5. ProcessDeaths: 死亡処理
+  # ...
+  organize PaySpellCosts,
            ResolveSpells,
-           ProcessDeaths, # スペルによる死亡処理
+           ProcessDeaths,
+           PayUnitCosts,
+           RevealCards,
            TriggerRoundStartEffects,
            ExecuteCombat,
            ProcessDeaths,
