@@ -2,11 +2,13 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["board", "graveyard", "deck"]
-
-  connect() {
-    this.isAnimating = false
-    this.queue = []
+  static values = {
+         currentPlayerId: Number
   }
+
+  // ... (connect, etc - existing code)
+
+
 
   // BoardControllerから呼び出される
   async playLogs(event) {
@@ -251,9 +253,11 @@ export default class extends Controller {
     const imagePath = log.details.image_path || "/assets/cards/card_back_ancient.png"
     const ownerPlayerId = log.details.owner_player_id
     
-    // 現在のプレイヤーIDを取得
-    const currentPlayerId = parseInt(this.element.dataset.gameAnimationCurrentPlayerIdValue)
+    // 現在のプレイヤーIDを取得 (Stimulus Value)
+    const currentPlayerId = this.currentPlayerIdValue
     const isSelf = (ownerPlayerId === currentPlayerId)
+
+    console.log("[DEBUG] CutIn Check:", { ownerPlayerId, currentPlayerId, isSelf })
 
     // 1. Cut-In Animation
     const cutInContainer = document.createElement("div")

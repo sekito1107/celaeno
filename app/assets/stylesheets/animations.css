@@ -194,9 +194,10 @@
   perspective: 1000px;
 }
 
-.spell-cut-in-container.is-opponent .spell-cut-in-content {
-  flex-direction: row-reverse; /* Swap Image/Text for opponent */
-}
+/* Remove row-reverse to keep text readable/consistent order */
+/*.spell-cut-in-container.is-opponent .spell-cut-in-content {
+  flex-direction: row-reverse; 
+}*/
 
 /* Card Art Style */
 .spell-cut-in-image {
@@ -220,8 +221,9 @@
 }
 
 /* Opponent Spell Image Animation */
+/* Adjust start position since we are not reversing row */
 .spell-cut-in-container.is-opponent .spell-cut-in-image {
-  transform: translateX(200px) rotateY(-40deg) rotateZ(10deg) scale(0.8);
+  transform: translateX(-200px) rotateY(-40deg) rotateZ(10deg) scale(0.8);
 }
 .spell-cut-in-container.is-opponent.animate .spell-cut-in-image {
   animation: cut-in-image-fly-opponent 2.0s cubic-bezier(0.19, 1, 0.22, 1) forwards;
@@ -250,7 +252,7 @@
 }
 
 .spell-cut-in-container.is-opponent .spell-cut-in-text {
-  transform: translateX(-200px) skewX(-20deg);
+  transform: translateX(200px) skewX(-20deg);
 }
 .spell-cut-in-container.is-opponent.animate .spell-cut-in-text {
   animation: cut-in-text-slide-opponent 2.0s cubic-bezier(0.19, 1, 0.22, 1) forwards;
