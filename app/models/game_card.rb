@@ -18,7 +18,7 @@ class GameCard < ApplicationRecord
 
   before_validation :initialize_stats, on: :create
 
-  delegate :haste?, :guardian?, to: :card
+  delegate :haste?, :guardian?, :unit?, :spell?, to: :card
 
   def has_summon_sickness?
     return false if haste?

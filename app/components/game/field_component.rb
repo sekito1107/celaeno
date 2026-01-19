@@ -43,16 +43,24 @@ class Game::FieldComponent < ApplicationComponent
   end
 
   def slot_card(position)
-    # N+1対策: メモリ上の game_cards から検索
-    card = @game_player.game_cards.find { |gc| gc.location_board? && gc.position == position.to_s }
-    return card if card
+    find_board_card(position) || find_scheduled_card(position)
+  end
 
+  def find_board_card(position)
+    # N+1対策: メモリ上の game_cards から検索
+    @game_player.game_cards.find { |gc| gc.location_board? && gc.position == position.to_s }
+  end
+
+  def find_scheduled_card(position)
     # 相手の場合は召喚予定を見せない
     return nil if opponent?
 
     # 召喚予定カードを検索 (Move経由)
-    # Move#position is now an enum, so it returns "left", "center", "right"
-    move = current_turn&.moves&.find { |m| m.user_id == @game_player.user_id && m.action_type_play? && m.position == position.to_s }
+    move = current_turn&.moves&.find do |m|
+      m.user_id == @game_player.user_id &&
+      m.action_type_play? &&
+      m.position == position.to_s
+    end
 
     move&.game_card
   end
