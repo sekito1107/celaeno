@@ -22,6 +22,7 @@ class ResolveSpells
           card_name: game_card.card.name,
           key_code: game_card.card.key_code,
           image_path: resolve_image_path(game_card.card),
+          owner_player_id: game_card.game_player_id,
           target_id: target&.id,
           target_ids: targets.map(&:id),
           target_type: target_type
