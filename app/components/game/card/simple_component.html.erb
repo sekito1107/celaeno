@@ -39,7 +39,7 @@
 
         <div class="stat-group hp-group <%= damaged? ? 'text-damaged' : '' %>">
           <span class="stat-icon">♥️</span>
-          <span class="stat-value"><%= hp %></span>
+          <span class="stat-value" data-game--countdown-target="value"><%= hp %></span>
         </div>
       </div>
     <% end %>

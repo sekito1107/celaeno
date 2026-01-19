@@ -36,7 +36,8 @@ export default class extends Controller {
       }
     } else if (data.type === "battle_logs") {
       // NOTE: アニメーション実装までのプレースホルダー
-      console.table(data.logs)
+      // console.table(data.logs)
+      this.dispatch("logs-received", { detail: { logs: data.logs } })
     }
   }
 

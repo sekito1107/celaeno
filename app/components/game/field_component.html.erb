@@ -1,5 +1,5 @@
 <div class="field-container">
-  <div class="field-deck-area">
+  <div class="field-deck-area" data-game--animation-target="deck">
     <div class="deck-placeholder">
       <div class="deck-count"><%= deck_count %></div>
     </div>
@@ -53,7 +53,9 @@
   <div class="field-right-stack">
     <!-- Graveyard -->
     <div class="field-area-wrapper" data-controller="card-list-modal">
-      <div class="field-graveyard-area" data-action="click->card-list-modal#open">
+      <div class="field-graveyard-area" 
+           data-action="click->card-list-modal#open"
+           data-game--animation-target="graveyard">
         <div class="field-label">Grave</div>
         <% if graveyard_top_card %>
           <%= render Game::CardComponent.new(card_entity: graveyard_top_card, variant: :field) %>
