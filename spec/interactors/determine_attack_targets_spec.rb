@@ -31,6 +31,45 @@ RSpec.describe DetermineAttackTargets, type: :interactor do
       end
     end
 
+    context 'サイドの敵に対する攻撃（ミラーロジック確認）' do
+      context 'Right vs Left (視覚的な正面)' do
+        let!(:attacker) do
+          create(:game_card, game: game, user: user, game_player: player,
+                 card: unit_card, location: :board, position: :right, summoned_turn: 0)
+        end
+        let!(:target) do
+          create(:game_card, game: game, user: opponent_user, game_player: opponent,
+                 card: unit_card, location: :board, position: :left, summoned_turn: 1)
+        end
+
+        it 'Opponent Left(0)を攻撃する' do
+          result = described_class.call(game: game)
+          attacker_plan = result.attack_plan.find { |p| p[:attacker] == attacker }
+
+          expect(attacker_plan).to be_present
+          expect(attacker_plan[:target]).to eq target
+        end
+      end
+
+      context 'Right vs Right (視覚的な斜め)' do
+        let!(:attacker) do
+          create(:game_card, game: game, user: user, game_player: player,
+                 card: unit_card, location: :board, position: :right, summoned_turn: 0)
+        end
+        let!(:diagonal_enemy) do
+          create(:game_card, game: game, user: opponent_user, game_player: opponent,
+                 card: unit_card, location: :board, position: :right, summoned_turn: 1)
+        end
+
+        it 'Opponent Right(2)は攻撃しない（プレイヤーを狙う）' do
+          result = described_class.call(game: game)
+          attacker_plan = result.attack_plan.find { |p| p[:attacker] == attacker }
+
+          expect(attacker_plan[:target]).to eq opponent
+        end
+      end
+    end
+
     context '正面に敵がおらず、守護持ちがいる場合' do
       let(:guardian_card) { create(:card, :unit, :with_guardian) }
       let!(:attacker) do
