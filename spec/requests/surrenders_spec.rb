@@ -30,6 +30,15 @@ RSpec.describe "Surrenders", type: :request do
           expect(flash[:notice]).to eq("降伏しました。")
         end
 
+        it "Turbo Streamリクエストに対して成功レスポンスを返すこと" do
+          post game_surrender_path(game), as: :turbo_stream
+
+          expect(response).to have_http_status(:ok)
+          expect(response.media_type).to eq Mime[:turbo_stream]
+          expect(response.body).to include('<turbo-stream action="replace" target="flash-messages">')
+          expect(flash.now[:notice]).to eq("降伏しました。")
+        end
+
         it "JSONリクエストに対して成功レスポンスを返すこと" do
           post game_surrender_path(game), as: :json
           expect(response).to have_http_status(:ok)

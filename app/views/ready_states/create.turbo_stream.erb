@@ -1,0 +1,6 @@
+<%= render "application/flash_stream" %>
+
+
+<%= turbo_stream.replace "player-status" do %>
+  <%= render Game::StatusBarComponent.new(game_player: @game_player, controls: true) %>
+<% end %>

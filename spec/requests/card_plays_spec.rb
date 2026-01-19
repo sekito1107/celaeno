@@ -55,6 +55,15 @@ RSpec.describe "CardPlays", type: :request do
           expect(response).to have_http_status(:ok)
           expect(JSON.parse(response.body)["status"]).to eq("success")
         end
+
+        it "Turbo Streamリクエストに対して成功レスポンスを返すこと" do
+          post game_card_plays_path(game), params: { game_card_id: game_card.id, position: 1 }, as: :turbo_stream
+
+          expect(response).to have_http_status(:ok)
+          expect(response.media_type).to eq Mime[:turbo_stream]
+          expect(response.body).to include('<turbo-stream action="replace" target="player-hand">')
+          expect(flash.now[:notice]).to eq("カードをプレイしました")
+        end
       end
 
       context "異常系" do

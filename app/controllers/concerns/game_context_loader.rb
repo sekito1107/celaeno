@@ -11,6 +11,7 @@ module GameContextLoader
     @game = Game.find(params[:game_id])
     @game_player = @game.game_players.find_by!(user: current_user)
     @turn = @game.turns.order(turn_number: :desc).first
+    @resolving_cards = @game.game_cards.includes(:card).where(location: "resolving", user: current_user).select { |gc| !gc.unit? }
   rescue ActiveRecord::RecordNotFound
     respond_to do |format|
       format.html { redirect_to lobby_path, alert: "ゲームまたはプレイヤーが見つかりません" }

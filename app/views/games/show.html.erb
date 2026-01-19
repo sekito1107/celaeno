@@ -15,7 +15,7 @@
   <div id="card-preview-container" data-game--board-target="preview"></div>
 
   <!-- Opponent Area -->
-  <div class="status-bar-wrapper opponent-status">
+  <div id="opponent-status" class="status-bar-wrapper opponent-status">
     <% if @opponent_game_player %>
       <%= render Game::StatusBarComponent.new(game_player: @opponent_game_player) %>
     <% end %>
@@ -24,8 +24,12 @@
   <div class="play-mat play-mat-opponent" 
        data-action="dragover->game--board#dragover drop->game--board#drop click->game--board#playCard">
     <% if @opponent_game_player %>
-      <%= render Game::FieldComponent.new(game_player: @opponent_game_player, viewer: current_user) %>
-      <%= render Game::HandComponent.new(game_player: @opponent_game_player, viewer: current_user) %>
+      <div id="opponent-field">
+        <%= render Game::FieldComponent.new(game_player: @opponent_game_player, viewer: current_user) %>
+      </div>
+      <div id="opponent-hand">
+        <%= render Game::HandComponent.new(game_player: @opponent_game_player, viewer: current_user) %>
+      </div>
     <% else %>
       <div class="flex items-center justify-center h-full">
         <p class="text-xl opacity-50 font-serif">Deep within the library...</p>
@@ -34,16 +38,22 @@
   </div>
 
   <!-- Player Area -->
-  <div class="status-bar-wrapper player-status">
+  <div id="player-status" class="status-bar-wrapper player-status">
     <%= render Game::StatusBarComponent.new(game_player: @game_player, controls: true) %>
   </div>
 
   <div class="play-mat">
-    <%= render Game::FieldComponent.new(game_player: @game_player, viewer: current_user) %>
+    <div id="player-field">
+      <%= render Game::FieldComponent.new(game_player: @game_player, viewer: current_user) %>
+    </div>
     
-    <%= render Game::ReservedSpellsComponent.new(cards: @resolving_cards) %>
+    <div id="reserved-spells">
+      <%= render Game::ReservedSpellsComponent.new(cards: @resolving_cards) %>
+    </div>
 
-    <%= render Game::HandComponent.new(game_player: @game_player, viewer: current_user) %>
+    <div id="player-hand">
+      <%= render Game::HandComponent.new(game_player: @game_player, viewer: current_user) %>
+    </div>
   </div>
 
   <!-- Game Over Overlay -->

@@ -7,11 +7,13 @@ module GameActionHelper
       message = success_message || result.message
 
       respond_to do |format|
+        format.turbo_stream { flash.now[:notice] = message }
         format.html { redirect_to game_path(@game), notice: message }
         format.json { render json: { status: "success", message: message }, status: :ok }
       end
     else
       respond_to do |format|
+        format.turbo_stream { flash.now[:alert] = result.message }
         format.html { redirect_to game_path(@game), alert: result.message }
         format.json { render json: { status: "error", message: result.message }, status: :unprocessable_content }
       end
