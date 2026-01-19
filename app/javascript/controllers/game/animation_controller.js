@@ -311,9 +311,8 @@ export default class extends Controller {
         return null
     }
     
-    // Datasetプロパティアクセスの互換性確認
-    // "data-game--countdown-user-id-value" -> dataset.gameCountdownUserIdValue
-    const userId = el.dataset.gameCountdownUserIdValue
+    // Datasetプロパティアクセスの互換性問題を避けるため getAttribute を使用
+    const userId = el.getAttribute("data-game--countdown-user-id-value")
     if (!userId) {
         console.warn(`[DEBUG] Element found for ${playerId} but userId is missing.`, el)
     }
