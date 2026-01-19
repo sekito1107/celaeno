@@ -247,14 +247,12 @@ export default class extends Controller {
     const cardId = log.details.card_id
     const cardName = log.details.card_name || "SPELL CARD" // サーバーから渡ってくる想定
     const keyCode = log.details.key_code 
-    const imageName = log.details.image_name // サーバー側で解決済みのファイル名 (例: art_ritual.png)
-    
+    // サーバーから完全なアセットパス (/assets/cards/foo-digest.png) が送られてくる
+    const imagePath = log.details.image_path || "/assets/cards/card_back_ancient.png"
+
     // 1. Cut-In Animation
     const cutInContainer = document.createElement("div")
     cutInContainer.className = "spell-cut-in-container"
-    
-    // 画像パスの構築
-    const imagePath = imageName ? `/assets/cards/${imageName}` : "/assets/cards/card_back_ancient.png"
 
     cutInContainer.innerHTML = `
       <div class="spell-cut-in-bg" style="background-image: url('${imagePath}');"></div>
