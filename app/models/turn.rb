@@ -38,6 +38,8 @@ class Turn < ApplicationRecord
 
     pending_moves.each do |move|
       cost_str = move.game_card.card.cost
+      next if cost_str.nil?
+
       min, max = Dice.range(cost_str)
       min_total += min
       max_total += max
