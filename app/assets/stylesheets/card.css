@@ -611,3 +611,40 @@
   line-height: 1.5;
   color: #fca5a5;
 }
+/* Pending Cost Badge */
+.simple-pending-cost {
+  position: absolute;
+  top: 40px; /* Below cost circle */
+  left: 4px;
+  min-width: 32px;
+  padding: 0 4px;
+  height: 20px;
+  background-color: rgba(20, 0, 0, 0.9);
+  border: 1px solid #ef4444; /* Red border */
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444; /* Red text */
+  font-family: var(--font-display), sans-serif;
+  font-weight: bold;
+  font-size: 0.8rem;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Adjust for field cards */
+.card-field .simple-pending-cost {
+  top: 30px;
+  left: 2px;
+  min-width: 24px;
+  height: 16px;
+  font-size: 0.7rem;
+}

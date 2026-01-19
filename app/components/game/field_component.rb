@@ -62,7 +62,11 @@ class Game::FieldComponent < ApplicationComponent
       m.position == position.to_s
     end
 
-    move&.game_card
+    return nil unless move
+
+    card = move.game_card
+    card.pending_cost = move.cost
+    card
   end
 
   def left_slot_card
