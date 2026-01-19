@@ -12,13 +12,16 @@ RSpec.describe PayResolvePhaseCosts, type: :interactor do
       # Game references turn via has_many turns
 
       # Setup moves with costs
-      card = create(:card)
-      game_card = create(:game_card, game: game, game_player: game_player, user: user, card: card)
+      # Setup moves with costs
+      card1 = create(:card)
+      card2 = create(:card)
+      game_card1 = create(:game_card, game: game, game_player: game_player, user: user, card: card1)
+      game_card2 = create(:game_card, game: game, game_player: game_player, user: user, card: card2)
 
       # Move 1: Cost 3
-      create(:move, turn: turn, user: user, game_card: game_card, action_type: :play, position: :left, cost: 3)
+      create(:move, turn: turn, user: user, game_card: game_card1, action_type: :play, position: :left, cost: 3)
       # Move 2: Cost 2
-      create(:move, turn: turn, user: user, game_card: game_card, action_type: :play, position: :right, cost: 2)
+      create(:move, turn: turn, user: user, game_card: game_card2, action_type: :play, position: :right, cost: 2)
     end
 
     subject(:context) { described_class.call(game: game) }
@@ -45,6 +48,7 @@ RSpec.describe PayResolvePhaseCosts, type: :interactor do
       end
 
       it 'SANは消費されないこと' do
+        expect(game).not_to receive(:check_player_death!)
         expect { context }.not_to change { game_player.reload.san }
       end
     end
