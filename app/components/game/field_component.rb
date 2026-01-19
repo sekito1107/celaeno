@@ -51,9 +51,8 @@ class Game::FieldComponent < ApplicationComponent
     return nil if opponent?
 
     # 召喚予定カードを検索 (Move経由)
-    # Move#position is integer, need to map symbol to integer
-    pos_int = GameCard.positions[position.to_s]
-    move = current_turn&.moves&.find { |m| m.user_id == @game_player.user_id && m.action_type_play? && m.position == pos_int }
+    # Move#position is now an enum, so it returns "left", "center", "right"
+    move = current_turn&.moves&.find { |m| m.user_id == @game_player.user_id && m.action_type_play? && m.position == position.to_s }
 
     move&.game_card
   end

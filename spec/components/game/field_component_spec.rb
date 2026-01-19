@@ -92,7 +92,8 @@ RSpec.describe Game::FieldComponent, type: :component do
 
     before do
        # Create a Move (schedule unit play)
-       create(:move, turn: turn, user: user, game_card: hand_card, action_type: :play, position: 1) # Center slot
+       # Using 'center' directly as Move now has enum
+       create(:move, turn: turn, user: user, game_card: hand_card, action_type: :play, position: :center)
     end
 
     context "自分が閲覧する場合" do

@@ -8,7 +8,9 @@ class Move < ApplicationRecord
   belongs_to :target_player, class_name: "GamePlayer", optional: true
 
   enum :action_type, { play: 0, attack: 1, spell: 2 }, prefix: true
-  validates :position, presence: true, inclusion: { in: 0..2 }, if: :action_type_play?
+  enum :position, { left: 0, center: 1, right: 2 }, prefix: false
+
+  validates :position, presence: true, inclusion: { in: positions.keys }, if: :action_type_play?
   validates :position, absence: true, if: :action_type_spell?
   validates :position, absence: true, if: :action_type_attack?
 end
