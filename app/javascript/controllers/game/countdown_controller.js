@@ -38,6 +38,11 @@ export default class extends Controller {
     const duration = 1000
     const startTime = performance.now()
 
+    // アニメーション開始：拡大
+    if (this.hasValueTarget) {
+      this.valueTarget.classList.add("animate-pop-scale")
+    }
+
     const step = (currentTime) => {
       const elapsed = currentTime - startTime
       const progress = Math.min(elapsed / duration, 1)
@@ -51,6 +56,11 @@ export default class extends Controller {
       } else {
         this.displayValue = newValue
         this.currentValue = newValue
+        
+        // アニメーション終了：元のサイズに戻す
+        if (this.hasValueTarget) {
+          this.valueTarget.classList.remove("animate-pop-scale")
+        }
       }
     }
 
