@@ -65,6 +65,7 @@ class ResolveDamage
       attacker_id: attacker.id,
       attacker_name: attacker.card.name,
       attacker_position: attacker.position,
+      attacker_player_id: attacker.game_player_id,
       damage: damage
     }.merge(target_info))
 
