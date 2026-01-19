@@ -405,7 +405,8 @@
 }
 
 /* Player Field Hover: Pop up */
-.play-mat:not(.play-mat-opponent) .field-slot:hover .card-wrapper {
+/* Disable visual hover pop-up when a card is selected (has-selection) */
+.game-board:not(.has-selection) .play-mat:not(.play-mat-opponent) .field-slot:hover .card-wrapper {
   transform: translateY(-20px) scale(1.1);
   z-index: 100;
   box-shadow: 0 10px 20px rgba(0,0,0,0.8);

@@ -149,6 +149,7 @@ export default class extends Controller {
         this.selectedCardId = null
         this.selectedCardType = null
         element.setAttribute("data-game--card-selected-value", "false")
+        this.element.classList.remove("has-selection")
         
         
         // ピン留め解除
@@ -162,6 +163,7 @@ export default class extends Controller {
         this.selectedCardId = cardId
         this.selectedCardType = cardType
         element.setAttribute("data-game--card-selected-value", "true")
+        this.element.classList.add("has-selection")
         
         // ピン留め
         if (this.hasPreviewTarget) {
@@ -185,6 +187,7 @@ export default class extends Controller {
     })
     this.selectedCardId = null
     this.selectedCardType = null
+    this.element.classList.remove("has-selection")
 
     if (this.hasPreviewTarget) {
         const previewContainer = this.previewTarget
