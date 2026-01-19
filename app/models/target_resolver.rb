@@ -21,10 +21,19 @@ class TargetResolver
   attr_reader :attacker, :opponent
 
   def front_enemy
+    target_pos = mirror_position(attacker.position)
     opponent.game_cards.includes(:card)
-            .where(location: :board, position: attacker.position)
+            .where(location: :board, position: target_pos)
             .where("current_hp > 0")
             .first
+  end
+
+  def mirror_position(pos)
+    case pos&.to_sym
+    when :left then :right
+    when :right then :left
+    else :center
+    end
   end
 
   def guardian
