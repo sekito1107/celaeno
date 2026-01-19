@@ -64,6 +64,7 @@ class ResolveDamage
     attacker.log_event!(:attack, {
       attacker_id: attacker.id,
       attacker_name: attacker.card.name,
+      attacker_position: attacker.position,
       damage: damage
     }.merge(target_info))
 

@@ -28,8 +28,37 @@ export default class extends Controller {
 
   async processQueue() {
     while (this.queue.length > 0) {
-      const log = this.queue.shift()
-      await this.playLog(log)
+      if (this.queue[0].event_type === "attack") {
+        // 攻撃フェーズのログをまとめて取得
+        const combatLogs = []
+        while (this.queue.length > 0 && this.queue[0].event_type === "attack") {
+          combatLogs.push(this.queue.shift())
+        }
+        await this.playCombatPhase(combatLogs)
+      } else {
+        const log = this.queue.shift()
+        await this.playLog(log)
+      }
+    }
+  }
+
+  async playCombatPhase(combatLogs) {
+    const positions = ["left", "center", "right"]
+    
+    for (const pos of positions) {
+      const logsInPos = combatLogs.filter(log => log.details.attacker_position === pos)
+      if (logsInPos.length > 0) {
+        // 同じポジションの攻撃を同時に再生
+        await Promise.all(logsInPos.map(log => this.playLog(log)))
+        // 各ポジションの合間に少し待機して視認性を高める
+        await this.delay(300)
+      }
+    }
+
+    // もしポジションが特定できない攻撃（将来用）があれば最後に流す
+    const remaining = combatLogs.filter(log => !positions.includes(log.details.attacker_position))
+    if (remaining.length > 0) {
+      await Promise.all(remaining.map(log => this.playLog(log)))
     }
   }
 
