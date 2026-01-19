@@ -60,6 +60,7 @@ class ResolveDamage
     target_type = result[:target_type]
 
     target.take_damage!(damage)
+    target.reload # 最新のステータス再取得
 
     # ターゲット情報の再構築（ダメージ適用後のHPなどを含めるため）
     target_info = build_target_info(target, target_type)

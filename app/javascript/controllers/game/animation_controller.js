@@ -180,10 +180,13 @@ export default class extends Controller {
     this.showDamageNumber(cardEl, amount)
 
     if (currentHp !== undefined) {
+      console.log("[DEBUG] AnimationController: Dispatching game--card:update-hp", { cardId, currentHp })
       // カードのHPをカウントダウン更新
       cardEl.dispatchEvent(new CustomEvent("game--card:update-hp", {
         detail: { newValue: currentHp }
       }))
+    } else {
+      console.warn("[DEBUG] AnimationController: currentHp missing in log", log)
     }
 
     // カードの振動演出
@@ -196,8 +199,13 @@ export default class extends Controller {
     const currentHp = log.details.target_hp 
     const currentSan = log.details.target_san 
 
+    console.log("[DEBUG] AnimationController: animatePlayerDamage", { targetPlayerId, damage, currentHp, currentSan })
+
     const targetUserId = this._findUserIdByPlayerId(targetPlayerId)
-    if (!targetUserId) return
+    if (!targetUserId) {
+        console.warn("[DEBUG] Target user ID not found", targetPlayerId)
+        return
+    }
 
     const targetEl = document.querySelector(`[data-game--countdown-user-id-value="${targetUserId}"] .hero-portrait-wrapper`)
     if (targetEl) {
@@ -206,11 +214,13 @@ export default class extends Controller {
 
     // StatusBarへ更新通知
     if (currentHp !== undefined) {
+        console.log("[DEBUG] Dispatching game--status:update-hp", { userId: targetUserId, currentHp })
         window.dispatchEvent(new CustomEvent("game--status:update-hp", {
             detail: { userId: parseInt(targetUserId), newValue: currentHp }
         }))
     }
     if (currentSan !== undefined) {
+        console.log("[DEBUG] Dispatching game--status:update-san", { userId: targetUserId, currentSan })
         window.dispatchEvent(new CustomEvent("game--status:update-san", {
             detail: { userId: parseInt(targetUserId), newValue: currentSan }
         }))

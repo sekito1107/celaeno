@@ -15,6 +15,8 @@ export default class extends Controller {
   // 外部からの更新（StatusBar等）
   updateFromEvent(event) {
     const { userId, newValue } = event.detail
+    console.log("[DEBUG] CountdownController: updateFromEvent received", { userId, newValue, myUserId: this.userIdValue })
+    
     // 自分のStatusBarでなければ無視
     if (this.hasUserIdValue && this.userIdValue !== userId) return
     
@@ -24,6 +26,7 @@ export default class extends Controller {
   // カード自身のHP更新など
   updateValue(event) {
      const { newValue } = event.detail
+     console.log("[DEBUG] CountdownController: updateValue received", { newValue, currentDisplay: this.displayValue })
      this.animateTo(newValue)
   }
 
