@@ -104,7 +104,7 @@ RSpec.describe Turn, type: :model do
     context '確定コストのMoveがある場合' do
       it 'そのコストを返すこと' do
         card = create(:card, cost: "3")
-        gc = create(:game_card, game: game, card: card, user: user)
+        gc = create(:game_card, game: game, card: card, user: user, game_player: game_player)
         create(:move, turn: turn, user: user, game_card: gc)
 
         expect(turn.pending_cost_range_for(user)).to eq([ 3, 3 ])
@@ -114,7 +114,7 @@ RSpec.describe Turn, type: :model do
     context '範囲コスト(ダイス)のMoveがある場合' do
       it '最小値と最大値を返すこと' do
         card = create(:card, cost: "1d4")
-        gc = create(:game_card, game: game, card: card, user: user)
+        gc = create(:game_card, game: game, card: card, user: user, game_player: game_player)
         create(:move, turn: turn, user: user, game_card: gc)
 
         expect(turn.pending_cost_range_for(user)).to eq([ 1, 4 ])
