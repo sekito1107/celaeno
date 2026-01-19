@@ -6,7 +6,7 @@ class ResolveSpells
     return if game.finished?
 
     # 解決待ちのスペルを取得（順序は作成順＝プレイ順とする）
-    resolving_spells = game.game_cards.includes(:card, :target_game_card).where(location: :resolving).order(:id)
+    resolving_spells = game.game_cards.joins(:card).includes(:card, :target_game_card).where(location: :resolving).merge(Card.spell).order(:id)
 
     resolving_spells.each do |game_card|
       break if game.reload.finished?

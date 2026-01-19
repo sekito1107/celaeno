@@ -106,5 +106,17 @@ RSpec.describe ResolveSpells, type: :interactor do
         expect(spell_game_card.reload.location).to eq 'resolving'
       end
     end
+    context 'ユニットカードが予約ゾーンにある場合' do
+      let(:unit_card) { create(:card, :unit) }
+      let(:unit_game_card) { create(:game_card, game: game, user: user, game_player: player, card: unit_card, location: :resolving) }
+
+      before { unit_game_card }
+
+      it 'ユニットカードは処理されず、墓地にも移動しない' do
+        described_class.call(turn: turn, game: game)
+
+        expect(unit_game_card.reload.location).to eq 'resolving'
+      end
+    end
   end
 end
