@@ -66,6 +66,7 @@ RSpec.describe DetermineAttackTargets, type: :interactor do
           attacker_plan = result.attack_plan.find { |p| p[:attacker] == attacker }
 
           expect(attacker_plan[:target]).to eq opponent
+          expect(attacker_plan[:target_type]).to eq :player
         end
       end
     end
