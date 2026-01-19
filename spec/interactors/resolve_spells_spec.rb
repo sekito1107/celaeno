@@ -113,7 +113,9 @@ RSpec.describe ResolveSpells, type: :interactor do
       before { unit_game_card }
 
       it 'ユニットカードは処理されず、墓地にも移動しない' do
-        described_class.call(turn: turn, game: game)
+        expect {
+          described_class.call(turn: turn, game: game)
+        }.not_to change(BattleLog, :count)
 
         expect(unit_game_card.reload.location).to eq 'resolving'
       end
