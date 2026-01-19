@@ -57,14 +57,15 @@ export default class extends Controller {
   updateDisplay(value) {
     if (this.hasValueTarget) {
       if (this.hasMaxValue) {
-        this.valueTarget.textContent = `${value} / ${this.maxValueValue}`
+        this.valueTarget.textContent = `${value} / ${this.maxValue}`
       } else {
         this.valueTarget.textContent = value
       }
     }
 
-    if (this.hasBarTarget && this.hasMaxValueValue) {
-      const percentage = (value / this.maxValueValue) * 100
+    if (this.hasBarTarget && this.hasMaxValue) {
+      const max = this.maxValue || 0
+      const percentage = max > 0 ? (value / max) * 100 : 0
       this.barTarget.style.width = `${percentage}%`
     }
   }
