@@ -18,7 +18,8 @@ class CreateMove
       user: context.game_player.user,
       game_card: context.game_card,
       action_type: resolve_action_type,
-      position: resolve_position
+      position: resolve_position,
+      cost: context.paid_cost || 0
     )
   end
 

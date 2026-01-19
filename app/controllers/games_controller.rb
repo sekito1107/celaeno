@@ -13,6 +13,7 @@ class GamesController < ApplicationController
     # GameAuthenticatable のチェックを通すためのインスタンス変数は再利用
     # (includes を使ってロードし直した @game を使うため)
 
+    # 現在のターンのMoveを取得してコストを紐付ける
     @resolving_cards = @game.game_cards.select do |card|
       card.location_resolving? && card.user_id == current_user.id && !card.unit?
     end

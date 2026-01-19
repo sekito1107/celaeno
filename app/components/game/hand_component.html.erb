@@ -1,4 +1,4 @@
-<div class="hand-container" data-controller="hand">
+<div class="hand-container" data-controller="hand" data-action="dragover->game--board#dragover drop->game--board#drop">
   <% if viewer_is_owner? %>
     <% cards.each do |game_card| %>
       <div class="hand-card-wrapper card-interactive">

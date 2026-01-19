@@ -1,7 +1,7 @@
 class PlayCard
   include Interactor::Organizer
 
-  organize ValidatePlay, PayCost, CreateMove, ProcessCardMovement, TriggerPlayEffect
+  organize ValidatePlay, CreateMove, ProcessCardMovement, TriggerPlayEffect
 
   around do |organizer_block|
     ActiveRecord::Base.transaction do

@@ -176,6 +176,9 @@
   /* Default relative for flow, overridden for players below */
   width: 100%;
   perspective: 1000px;
+  
+  /* Reduce vertical gap */
+  margin-top: -1.5rem; 
 }
 
 /* Allow interaction with cards in fixed container */
@@ -301,7 +304,8 @@
 .play-mat-opponent .hand-container {
   display: flex; /* Force flex */
   position: absolute;
-  bottom: -6rem; /* Push visually to top (rotated coordinates) */
+  bottom: -7.5rem; /* Increased from -6rem to avoid overlap */
+  margin-top: 0; /* Reset generic negative margin */
   left: 0;
   right: 0;
   height: 120px;
@@ -983,3 +987,44 @@
   100% { transform: translate(0,0); }
 }
 
+/* Pending Cost Display on Field */
+.field-pending-cost {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  
+  font-family: var(--font-display);
+  font-size: 1.0rem;
+  font-weight: bold;
+  color: #ef4444; /* Red */
+  
+  /* Remove shadow/frame-like glow */
+  background: transparent;
+  border: none;
+  
+  /* Reserve space to prevent layout shift */
+  min-height: 1.2rem;
+  box-sizing: border-box;
+  
+  animation: text-blink-red 1.5s infinite ease-in-out;
+}
+
+.field-pending-cost .label {
+  font-size: 0.75rem;
+  color: #fca5a5; 
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+@keyframes text-blink-red {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field-pending-cost {
+    animation: none;
+  }
+}

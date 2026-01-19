@@ -3,7 +3,15 @@
   <div class="reserved-cards-stack">
     <% @cards.each_with_index do |card, index| %>
       <div class="reserved-card-wrapper" style="--stack-index: <%= index %>;">
-          <%= render Game::CardComponent.new(card_entity: card, variant: :resolving) %>
+          <%# Reserved spells are always cancellable by the owner %>
+          <div class="draggable-source"
+                draggable="true"
+                data-card-id="<%= card.id %>"
+                data-card-type="cancel"
+                data-action="dblclick->game--board#cancelCard dragstart->game--board#dragstart"
+                style="height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
+            <%= render Game::CardComponent.new(card_entity: card, variant: :resolving) %>
+          </div>
       </div>
     <% end %>
   </div>

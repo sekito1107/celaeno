@@ -14,11 +14,7 @@
                       action: "click->game--board#playCard dragover->game--board#dragover drop->game--board#drop"
                     }
                   }) do %>
-        <% if left_slot_card %>
-          <%= render Game::CardComponent.new(card_entity: left_slot_card, variant: :field) %>
-        <% else %>
-          <div class="empty-slot"></div>
-        <% end %>
+        <%= render_slot_card(left_slot_card) || tag.div(class: "empty-slot") %>
       <% end %>
 
       <%= tag.div class: "field-slot center-slot",
@@ -28,11 +24,7 @@
                       action: "click->game--board#playCard dragover->game--board#dragover drop->game--board#drop"
                     }
                   }) do %>
-        <% if center_slot_card %>
-          <%= render Game::CardComponent.new(card_entity: center_slot_card, variant: :field) %>
-        <% else %>
-          <div class="empty-slot"></div>
-        <% end %>
+        <%= render_slot_card(center_slot_card) || tag.div(class: "empty-slot") %>
       <% end %>
 
       <%= tag.div class: "field-slot right-slot",
@@ -42,11 +34,7 @@
                       action: "click->game--board#playCard dragover->game--board#dragover drop->game--board#drop"
                     }
                   }) do %>
-        <% if right_slot_card %>
-          <%= render Game::CardComponent.new(card_entity: right_slot_card, variant: :field) %>
-        <% else %>
-          <div class="empty-slot"></div>
-        <% end %>
+        <%= render_slot_card(right_slot_card) || tag.div(class: "empty-slot") %>
       <% end %>
     </div>
     
@@ -54,6 +42,10 @@
       <div class="unit-summon-info">
         <span class="label">SUMMON:</span>
         <span class="value"><%= units_summoned %> / <%= unit_limit %></span>
+      </div>
+      <div class="field-pending-cost" style="<%= pending_cost_text.present? ? '' : 'visibility: hidden;' %>">
+        <span class="label">SAN COST:</span>
+        <%= pending_cost_text.presence || "0" %>
       </div>
     <% end %>
   </div>

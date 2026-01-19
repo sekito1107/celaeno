@@ -22,4 +22,14 @@ class CardPlaysController < ApplicationController
 
     handle_game_action(result, success_message: "カードをプレイしました")
   end
+
+  def destroy
+    result = CancelCardPlay.call(
+      game: @game,
+      user: current_user,
+      game_card_id: params[:game_card_id]
+    )
+
+    handle_game_action(result, success_message: "アクションをキャンセルしました")
+  end
 end

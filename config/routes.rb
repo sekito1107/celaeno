@@ -17,7 +17,11 @@ Rails.application.routes.draw do
   resource :lobby, only: [ :show ], controller: :lobby
   resource :matchmaking, only: %i[create show destroy], controller: :matchmaking
   resources :games, only: %i[show] do
-    resources :card_plays, only: %i[create]
+    resources :card_plays, only: %i[create] do
+      collection do
+        delete ":game_card_id", to: "card_plays#destroy", as: :destroy
+      end
+    end
     resources :ready_states, only: %i[create]
     resource :surrender, only: %i[create]
   end

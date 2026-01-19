@@ -11,6 +11,10 @@ class Game::FieldComponent < ApplicationComponent
     @game_player.user_id != @viewer.id
   end
 
+  def viewer_is_player?
+    @viewer && @viewer.id == @game_player.user_id
+  end
+
   def deck_count
     # N+1対策: メモリ上の game_cards からカウント
     @game_player.game_cards.count { |gc| gc.location_deck? }
@@ -40,6 +44,18 @@ class Game::FieldComponent < ApplicationComponent
 
     # updated_at, id の降順でソート (最新が先頭)
     cards.sort_by { |gc| [ gc.updated_at, gc.id ] }.reverse
+  end
+
+  def render_slot_card(card)
+    return nil unless card
+
+    card_html = render Game::CardComponent.new(card_entity: card, variant: :field)
+
+    if !opponent? && card.location_resolving?
+      tag.div(**cancellation_attributes(card)) { card_html }
+    else
+      card_html
+    end
   end
 
   def slot_card(position)
@@ -87,5 +103,36 @@ class Game::FieldComponent < ApplicationComponent
 
   def units_summoned
     current_turn&.units_summoned_count(@game_player.user) || 0
+  end
+
+  def pending_cost_text
+    return nil unless viewer_is_player?
+
+    # current_turnはprivateなのでここで定義済みのメソッドを使う
+    return nil unless current_turn
+
+    min_total, max_total = current_turn.pending_cost_range_for(@game_player.user)
+
+    return nil if max_total == 0
+
+    if min_total == max_total
+      "#{min_total}"
+    else
+      "#{min_total}~#{max_total}"
+    end
+  end
+
+  def cancellation_attributes(card)
+    return {} unless card.location_resolving?
+
+    {
+      draggable: "true",
+      data: {
+        card_id: card.id,
+        card_type: "cancel",
+        action: "dblclick->game--board#cancelCard dragstart->game--board#dragstart"
+      },
+      class: "draggable-source"
+    }
   end
 end

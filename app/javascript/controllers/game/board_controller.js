@@ -108,6 +108,8 @@ export default class extends Controller {
     // 選択されていない場合はバブリングさせて deselectAll へ
     if (!this.selectedCardId) return
 
+
+
     const targetPosition = event.currentTarget.dataset.position
     
     // Spellの場合はCardIDをターゲットにする場合がある
@@ -119,25 +121,54 @@ export default class extends Controller {
     if (this.selectedCardType === "unit" && !targetPosition) return
     
     // 有効なプレイと判断したらイベントを止める
+    event.preventDefault()
     event.stopPropagation()
     
     await this.performCardPlay(this.selectedCardId, targetPosition, targetId)
     this.deselectAll()
   }
 
+  // ドラッグ始点 (Cancellation)
+  dragstart(event) {
+    const target = event.target.closest('[draggable="true"]')
+    if (target && target.dataset.cardType === "cancel") {
+        event.dataTransfer.setData("text/plain", target.dataset.cardId)
+        event.dataTransfer.setData("application/x-card-type", "cancel")
+        event.dataTransfer.effectAllowed = "move"
+    } else {
+        // 通常のカードドラッグ（手札など）は他のコントローラーで処理あるいはここで処理
+    }
+  }
+
   // ドラッグオーバー（ドロップ許可判定）
   dragover(event) {
     event.preventDefault()
+    event.stopPropagation() // Prevent bubbling
     event.dataTransfer.dropEffect = "move"
   }
 
   // ドロップ＆プレイ
   async drop(event) {
     event.preventDefault()
+    event.stopPropagation() // Prevent bubbling to parent slot
+
     const cardId = event.dataTransfer.getData("text/plain")
     const cardType = event.dataTransfer.getData("application/x-card-type")
-    const targetPosition = event.currentTarget.dataset.position
+    
+    // キャンセルカードのドロップ（手札エリアへのドロップを想定）
+    if (cardType === "cancel") {
+        if (!cardId) return
 
+        // ドロップ先が Handエリア かどうか判定
+        if (event.currentTarget.closest('.hand-container') || event.currentTarget.classList.contains('hand-container')) {
+             await this.performCardCancel(cardId)
+             return
+        }
+        // それ以外（フィールド内の移動など）は現状サポートしないので無視
+        return
+    }
+
+    const targetPosition = event.currentTarget.dataset.position
     let targetId = this._resolveTargetId(event.currentTarget)
 
     if (!cardId) return
@@ -146,6 +177,16 @@ export default class extends Controller {
     if (cardType === "unit" && !targetPosition) return
     
     await this.performCardPlay(cardId, targetPosition, targetId)
+  }
+
+  // キャンセル（ダブルクリック）
+  async cancelCard(event) {
+      event.preventDefault()
+      event.stopPropagation()
+      const cardId = event.currentTarget.dataset.cardId
+      if (cardId) {
+          await this.performCardCancel(cardId)
+      }
   }
 
   // TargetID解決ヘルパー
@@ -204,6 +245,19 @@ export default class extends Controller {
     } catch (error) {
         console.error("Ready toggle failed:", error)
         alert(error.message || "処理に失敗しました")
+    }
+  }
+  // キャンセルAPI実行
+  async performCardCancel(cardId) {
+    try {
+        const response = await api.delete(`/games/${this.gameIdValue}/card_plays/${cardId}`)
+        
+        if (response.status === "success") {
+            window.location.reload()
+        }
+    } catch (error) {
+        console.error("Cancel failed:", error)
+        // 必要なら通知
     }
   }
 }

@@ -5,7 +5,6 @@ RSpec.describe PlayCard, type: :interactor do
     it 'Interactorが期待通りの順序で並んでいること' do
       expect(described_class.organized).to eq([
         ValidatePlay,
-        PayCost,
         CreateMove,
         ProcessCardMovement,
         TriggerPlayEffect
@@ -16,10 +15,10 @@ RSpec.describe PlayCard, type: :interactor do
   describe '.call' do
     let(:user) { create(:user) }
     let(:game) { create(:game) }
-    let(:game_player) { create(:game_player, game: game, user: user, san: 20) }
+    let!(:game_player) { create(:game_player, game: game, user: user, san: 20) }
     let!(:turn) { create(:turn, game: game, status: :planning) }
 
-    let(:card) { create(:card, :unit, cost: "1") }
+    let(:card) { create(:card, :unit, cost: "1d1") }
     let(:game_card) { create(:game_card, game: game, user: user, game_player: game_player, card: card, location: :hand) }
 
     let(:params) do
@@ -28,24 +27,26 @@ RSpec.describe PlayCard, type: :interactor do
         turn: turn,
         game_player: game_player,
         game_card: game_card,
-        position: 'center'
+        position: :center
       }
     end
 
     context '全ての条件を満たして正常にプレイする場合' do
-      it '成功し、コストが引かれ、カードが予約状態に移動すること' do
-        result = PlayCard.call(params)
+      it '成功し、カードが予約状態に移動するが、SANはまだ消費されないこと' do
+        allow(Dice).to receive(:roll).and_return(1)
+
+        result = described_class.call(params)
 
         expect(result).to be_a_success
+        expect(game_card.reload.location).to eq "resolving"
+        expect(game_card.position).to eq "center"
 
-        expect(game_player.reload.san).to eq 19
+        # SANはまだ消費されない
+        expect(game_player.reload.san).to eq 20
 
-        expect(Move.count).to eq 1
-
-        # Planningフェーズではresolvingに移動（解決フェーズでboardに移動）
-        game_card.reload
-        expect(game_card.location).to eq 'resolving'
-        expect(game_card.position).to eq 'center'
+        # Moveにコストが保存されていること
+        move = Move.last
+        expect(move.cost).to eq 1
       end
     end
 
