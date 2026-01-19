@@ -32,7 +32,7 @@ class GameCard < ApplicationRecord
   end
 
   def can_attack?
-    location_board? && !stunned?
+    location_board? && !has_summon_sickness? && !stunned?
   end
 
   def take_damage!(amount)
