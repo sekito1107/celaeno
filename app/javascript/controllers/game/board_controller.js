@@ -20,11 +20,30 @@ export default class extends Controller {
         received: this.handleMessage.bind(this)
       }
     )
+
+    // Turbo Streamの一時停止制御
+    this.onBeforeStreamRender = this.handleBeforeStreamRender.bind(this)
+    document.addEventListener("turbo:before-stream-render", this.onBeforeStreamRender)
   }
 
   disconnect() {
     this.channel?.unsubscribe()
     this.consumer?.disconnect()
+    document.removeEventListener("turbo:before-stream-render", this.onBeforeStreamRender)
+  }
+
+  handleBeforeStreamRender(event) {
+    const animationController = this.application.getControllerForElementAndIdentifier(this.element, "game--animation")
+    if (animationController && animationController.isAnimating) {
+        event.preventDefault()
+        
+        // アニメーション完了後に再開
+        const resumeRender = () => {
+             this.element.removeEventListener("game--animation:finished", resumeRender)
+             event.detail.render(event.detail.newStream)
+        }
+        this.element.addEventListener("game--animation:finished", resumeRender)
+    }
   }
 
   async handleMessage(data) {
@@ -56,6 +75,21 @@ export default class extends Controller {
   }
 
   refreshBoard() {
+    // アニメーション中ならリロードを保留する
+    const animationController = this.application.getControllerForElementAndIdentifier(this.element, "game--animation")
+    if (animationController && animationController.isAnimating) {
+        if (!this._waitingForAnimation) {
+            this._waitingForAnimation = true
+            const onFinished = () => {
+                this.element.removeEventListener("game--animation:finished", onFinished)
+                this._waitingForAnimation = false
+                this.refreshBoard()
+            }
+            this.element.addEventListener("game--animation:finished", onFinished)
+        }
+        return
+    }
+
     // すでにリロード処理中ならスキップ
     if (this._refreshing) return
     this._refreshing = true
@@ -66,7 +100,7 @@ export default class extends Controller {
       window.location.reload()
     }
     
-    // 予備的にフラグを戻す（通常はリロードでリセットされるがTurbo遷移のため）
+    // 予備的にフラグを戻す
     setTimeout(() => { this._refreshing = false }, 2000)
   }
 
