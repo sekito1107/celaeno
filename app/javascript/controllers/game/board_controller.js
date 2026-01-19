@@ -55,8 +55,7 @@ export default class extends Controller {
   }
 
   refreshBoard() {
-    // すでにアニメーション中ならリロードを予約するなどの制御が必要かもしれないが、
-    // 基本は一度だけ実行されるようにする
+    // すでにリロード処理中ならスキップ
     if (this._refreshing) return
     this._refreshing = true
 
@@ -65,6 +64,9 @@ export default class extends Controller {
     } else {
       window.location.reload()
     }
+    
+    // 予備的にフラグを戻す（通常はリロードでリセットされるがTurbo遷移のため）
+    setTimeout(() => { this._refreshing = false }, 2000)
   }
 
   // 詳細表示の更新（イベント受信）

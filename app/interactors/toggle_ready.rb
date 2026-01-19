@@ -31,16 +31,16 @@ class ToggleReady
       end
     end
 
-    # 常に全員に準備状態の変更を通知（リアルタイム反映用）
-    GameChannel.broadcast_to(game, {
-      type: "ready_update",
-      game_player_id: game_player.id,
-      ready: game_player.ready
-    })
-
     if broadcast_logs
       # バトルログと盤面更新を配信
       Game::BroadcastBattleLogs.call(game: game, logs: turn.battle_logs)
+    else
+      # 準備状態の変更のみを通知（フェーズ移行がない場合）
+      GameChannel.broadcast_to(game, {
+        type: "ready_update",
+        game_player_id: game_player.id,
+        ready: game_player.ready
+      })
     end
   end
 
