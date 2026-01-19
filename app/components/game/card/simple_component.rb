@@ -28,12 +28,11 @@ class Game::Card::SimpleComponent < Game::Card::BaseComponent
 
       def scheduled?
         # FieldComponent passes variant: :field for scheduled cards too,
-        # but their location is still :hand (or potentially :resolving).
-        # We check if it is displayed as :field or :resolving but not actually on board location.
+        # but their location is still :hand or :resolving (reserved).
+        # We check if it is displayed as :field but not actually on board location.
         return false unless game_card?
 
-        # If it's effectively on the field view but location is hand
-        variant_field? && @card_entity.location_hand?
+        variant_field? && (@card_entity.location_hand? || @card_entity.location_resolving?)
       end
 
       def wrapper_classes

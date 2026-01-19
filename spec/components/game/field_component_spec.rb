@@ -96,6 +96,11 @@ RSpec.describe Game::FieldComponent, type: :component do
     end
 
     context "自分が閲覧する場合" do
+      before do
+        # 実際の実装では、ProcessCardMovementによりlocationがresolvingになる
+        hand_card.update!(location: :resolving)
+      end
+
       it "スロットにカードが表示され、scheduled-summonクラスが付与されていること" do
         render_inline(described_class.new(game_player: game_player, viewer: user))
 
