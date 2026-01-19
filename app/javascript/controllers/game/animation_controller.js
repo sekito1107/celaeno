@@ -256,7 +256,7 @@ export default class extends Controller {
     const imagePath = keyCode ? `/assets/cards/${keyCode}.jpg` : "/assets/cards/card_back_ancient.png"
 
     cutInContainer.innerHTML = `
-      <div class="spell-cut-in-bg"></div>
+      <div class="spell-cut-in-bg" style="background-image: url('${imagePath}');"></div>
       <div class="spell-cut-in-content">
         <div class="spell-cut-in-image" style="background-image: url('${imagePath}');"></div>
         <div class="spell-cut-in-text">${cardName}</div>
