@@ -1,5 +1,9 @@
 # scripts/setup_demo_game.rb
 
+unless Rails.env.development? || Rails.env.test?
+  abort "This script is allowed only in development/test environments."
+end
+
 # 1. Find Users
 user1 = User.find_by(email_address: "test1@example.com")
 user2 = User.find_by(email_address: "test2@example.com")
