@@ -29,7 +29,7 @@ class TargetResolver
   end
 
   def mirror_position(pos)
-    case pos.to_sym
+    case pos&.to_sym
     when :left then :right
     when :right then :left
     else :center
