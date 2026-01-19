@@ -44,6 +44,15 @@ RSpec.describe "ReadyStates", type: :request do
             expect(response).to have_http_status(:ok)
             expect(JSON.parse(response.body)["message"]).to eq("準備完了状態を変更しました")
           end
+
+          it "Turbo Streamリクエストに対して成功レスポンスを返すこと" do
+            post game_ready_states_path(game), as: :turbo_stream
+
+            expect(response).to have_http_status(:ok)
+            expect(response.media_type).to eq Mime[:turbo_stream]
+            expect(response.body).to include('<turbo-stream action="replace" target="player-status">')
+            expect(flash.now[:notice]).to eq("準備完了状態を変更しました")
+          end
         end
 
         context "両者が準備完了しフェーズが完了した場合" do

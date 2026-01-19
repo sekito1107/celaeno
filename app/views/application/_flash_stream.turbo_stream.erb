@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "flash-messages" do %>
+  <%= render FlashComponent.new(flash: flash) %>
+<% end %>

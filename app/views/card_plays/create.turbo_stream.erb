@@ -1,0 +1,26 @@
+<%= render "application/flash_stream" %>
+
+
+<%= turbo_stream.replace "player-hand" do %>
+  <div id="player-hand">
+    <%= render Game::HandComponent.new(game_player: @game_player, viewer: current_user) %>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "player-field" do %>
+  <div id="player-field">
+    <%= render Game::FieldComponent.new(game_player: @game_player, viewer: current_user) %>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "player-status" do %>
+  <div id="player-status" class="status-bar-wrapper player-status">
+    <%= render Game::StatusBarComponent.new(game_player: @game_player, controls: true) %>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "reserved-spells" do %>
+  <div id="reserved-spells">
+    <%= render Game::ReservedSpellsComponent.new(cards: @resolving_cards) %>
+  </div>
+<% end %>
