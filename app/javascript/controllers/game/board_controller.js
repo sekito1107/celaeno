@@ -108,8 +108,7 @@ export default class extends Controller {
     // 選択されていない場合はバブリングさせて deselectAll へ
     if (!this.selectedCardId) return
 
-    event.preventDefault()
-    event.stopPropagation() // Prevent bubbling
+
 
     const targetPosition = event.currentTarget.dataset.position
     
@@ -122,6 +121,7 @@ export default class extends Controller {
     if (this.selectedCardType === "unit" && !targetPosition) return
     
     // 有効なプレイと判断したらイベントを止める
+    event.preventDefault()
     event.stopPropagation()
     
     await this.performCardPlay(this.selectedCardId, targetPosition, targetId)
