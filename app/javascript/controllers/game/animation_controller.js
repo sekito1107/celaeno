@@ -153,18 +153,15 @@ export default class extends Controller {
             this.animateDamage({
                 details: {
                     card_id: log.details.target_card_id,
-                    amount: log.details.damage
+                    amount: log.details.damage,
+                    current_hp: log.details.target_hp // サーバーから返却される想定
                 }
             })
         })
     } else if (log.details.target_type === "player" && log.details.target_player_id) {
         // プレイヤーへの攻撃の場合も数値を出す
         this.delay(300).then(() => {
-            const targetUserId = this._findUserIdByPlayerId(log.details.target_player_id)
-            const targetEl = document.querySelector(`[data-game--countdown-user-id-value="${targetUserId}"] .hero-portrait-wrapper`)
-            if (targetEl) {
-                this.showDamageNumber(targetEl, log.details.damage)
-            }
+            this.animatePlayerDamage(log)
         })
     }
 
@@ -174,6 +171,7 @@ export default class extends Controller {
   async animateDamage(log) {
     const cardId = log.details.card_id
     const amount = log.details.amount
+    const currentHp = log.details.current_hp
 
     const cardEl = document.querySelector(`#game-card-${cardId}`)
     if (!cardEl) return
@@ -181,8 +179,42 @@ export default class extends Controller {
     this._ensureActive(cardEl)
     this.showDamageNumber(cardEl, amount)
 
+    if (currentHp !== undefined) {
+      // カードのHPをカウントダウン更新
+      cardEl.dispatchEvent(new CustomEvent("game--card:update-hp", {
+        detail: { newValue: currentHp }
+      }))
+    }
+
     // カードの振動演出
     return this.applyAnimation(cardEl, "animate-damage", 1000)
+  }
+
+  async animatePlayerDamage(log) {
+    const targetPlayerId = log.details.target_player_id
+    const damage = log.details.damage
+    const currentHp = log.details.target_hp // サーバーから返却される想定
+    const currentSan = log.details.target_san // サーバーから返却される想定
+
+    const targetUserId = this._findUserIdByPlayerId(targetPlayerId)
+    if (!targetUserId) return
+
+    const targetEl = document.querySelector(`[data-game--countdown-user-id-value="${targetUserId}"] .hero-portrait-wrapper`)
+    if (targetEl) {
+        this.showDamageNumber(targetEl, damage)
+    }
+
+    // StatusBarへ更新通知
+    if (currentHp !== undefined) {
+        window.dispatchEvent(new CustomEvent("game--status:update-hp", {
+            detail: { userId: parseInt(targetUserId), newValue: currentHp }
+        }))
+    }
+    if (currentSan !== undefined) {
+        window.dispatchEvent(new CustomEvent("game--status:update-san", {
+            detail: { userId: parseInt(targetUserId), newValue: currentSan }
+        }))
+    }
   }
 
   async animateDeath(log) {

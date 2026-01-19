@@ -59,6 +59,9 @@ class ResolveDamage
     damage = result[:damage]
     target_type = result[:target_type]
 
+    target.take_damage!(damage)
+
+    # ターゲット情報の再構築（ダメージ適用後のHPなどを含めるため）
     target_info = build_target_info(target, target_type)
 
     attacker.log_event!(:attack, {
@@ -69,15 +72,24 @@ class ResolveDamage
       damage: damage
     }.merge(target_info))
 
-    target.take_damage!(damage)
     context.game.check_player_death!(target) if target.is_a?(GamePlayer)
   end
 
   def build_target_info(target, target_type)
     if target_type == :player
-      { target_type: "player", target_player_id: target.id }
+      {
+        target_type: "player",
+        target_player_id: target.id,
+        target_hp: target.hp,
+        target_san: target.san
+      }
     else
-      { target_type: "unit", target_card_id: target.id, target_card_name: target.card.name }
+      {
+        target_type: "unit",
+        target_card_id: target.id,
+        target_card_name: target.card.name,
+        target_hp: target.current_hp
+      }
     end
   end
 end
