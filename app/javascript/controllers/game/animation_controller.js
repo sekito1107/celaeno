@@ -65,7 +65,7 @@ export default class extends Controller {
 
   async animateReveal(log) {
     const cardId = log.details.card_id
-    return this.applyAnimation(`#game-card-${cardId}`, "animate-reveal", 600)
+    return this.applyAnimation(`#game-card-${cardId}`, "animate-reveal", 1200)
   }
 
   async animateAttack(log) {
@@ -76,15 +76,18 @@ export default class extends Controller {
     const isOpponent = attackerEl.closest('.play-mat-opponent') !== null
     const directionClass = isOpponent ? "animate-attack-down" : "animate-attack-up"
 
-    const attackAnim = this.applyAnimation(attackerEl, directionClass, 400)
+    const attackAnim = this.applyAnimation(attackerEl, directionClass, 800)
 
     // 攻撃ログのターゲットがユニットの場合、ダメージ演出を並行実行
     if (log.details.target_type === "unit" && log.details.target_card_id) {
-        this.animateDamage({
-            details: {
-                card_id: log.details.target_card_id,
-                amount: log.details.damage
-            }
+        // 少し遅らせてダメージ演出を開始
+        this.delay(300).then(() => {
+            this.animateDamage({
+                details: {
+                    card_id: log.details.target_card_id,
+                    amount: log.details.damage
+                }
+            })
         })
     }
 
@@ -96,17 +99,17 @@ export default class extends Controller {
     const amount = log.details.amount
 
     // カードの振動演出
-    return this.applyAnimation(`#game-card-${cardId}`, "animate-damage", 500)
+    return this.applyAnimation(`#game-card-${cardId}`, "animate-damage", 1000)
   }
 
   async animateDeath(log) {
     const cardId = log.details.card_id
-    return this.applyAnimation(`#game-card-${cardId}`, "animate-death", 800)
+    return this.applyAnimation(`#game-card-${cardId}`, "animate-death", 1500)
   }
 
   async animateSpell(log) {
     const cardId = log.details.card_id
-    return this.applyAnimation(`#game-card-${cardId}`, "animate-spell", 700)
+    return this.applyAnimation(`#game-card-${cardId}`, "animate-spell", 1400)
   }
 
   async animatePayCost(log) {

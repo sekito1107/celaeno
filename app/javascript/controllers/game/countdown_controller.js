@@ -32,7 +32,7 @@ export default class extends Controller {
 
     const start = this.displayValue
     const diff = newValue - start
-    const duration = 500
+    const duration = 1000
     const startTime = performance.now()
 
     const step = (currentTime) => {
