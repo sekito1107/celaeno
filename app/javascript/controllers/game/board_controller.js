@@ -146,7 +146,7 @@ export default class extends Controller {
 
   // 選択解除ヘルパー
   deselectAll() {
-    this.element.querySelectorAll('[data-controller="game--card"]').forEach(el => {
+    this.element.querySelectorAll('[data-controller~="game--card"]').forEach(el => {
         el.setAttribute("data-game--card-selected-value", "false")
     })
     this.selectedCardId = null
