@@ -1038,3 +1038,34 @@
   box-shadow: 0 4px 6px rgba(0,0,0,0.6) !important; /* Reset to default shadow */
   z-index: 1 !important;
 }
+
+/* --- Valid Target Highlighting --- */
+.target-highlight {
+  box-shadow: 0 0 15px 5px rgba(100, 220, 255, 0.5) !important;
+  border-color: rgba(100, 220, 255, 0.8) !important;
+  animation: target-highlight-pulse 1.5s infinite alternate;
+  z-index: 50 !important; /* Ensure it's above other elements but below selected card */
+  cursor: pointer; /* Suggest interactivity */
+}
+
+/* Adjust for Card Wrappers (which have rounded corners and specific shadows) */
+.card-wrapper.target-highlight {
+  box-shadow: 0 0 20px 8px rgba(100, 220, 255, 0.6) !important;
+}
+
+/* Adjust for Opponent Play Mat (Whole Area) */
+.play-mat-opponent.target-highlight {
+  box-shadow: inset 0 0 50px rgba(100, 220, 255, 0.3) !important;
+  border: 2px solid rgba(100, 220, 255, 0.5) !important;
+}
+
+@keyframes target-highlight-pulse {
+  from {
+    box-shadow: 0 0 10px 2px rgba(100, 220, 255, 0.3) !important;
+    border-color: rgba(100, 220, 255, 0.5) !important;
+  }
+  to {
+    box-shadow: 0 0 20px 8px rgba(100, 220, 255, 0.7) !important;
+    border-color: rgba(100, 220, 255, 1.0) !important;
+  }
+}

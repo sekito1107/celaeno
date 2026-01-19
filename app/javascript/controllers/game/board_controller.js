@@ -177,6 +177,12 @@ export default class extends Controller {
                 previewContainer.classList.add("active") // Ensure active is set
             }
         }
+
+        // ターゲット候補のハイライト
+        const targetTypeHint = element.dataset.gameCardTargetTypeHintValue
+        if (targetTypeHint) {
+            this._highlightValidTargets(targetTypeHint)
+        }
     }
   }
 
@@ -188,8 +194,11 @@ export default class extends Controller {
     this.selectedCardId = null
     this.selectedCardType = null
     this.element.classList.remove("has-selection")
+    
+    this._clearHighlights()
 
     if (this.hasPreviewTarget) {
+
         const previewContainer = this.previewTarget
         delete previewContainer.dataset.pinnedBy
         previewContainer.classList.remove("pinned")
@@ -350,5 +359,48 @@ export default class extends Controller {
         console.error("Cancel failed:", error)
         // 必要なら通知
     }
+  }
+
+  // --- Highlighting Helpers ---
+
+  _highlightValidTargets(hint) {
+    if (!hint || hint === "none") return
+
+    let selector = ""
+    switch (hint) {
+      case "slot":
+        // 自分のフィールドの空きスロット (厳密には .play-mat-opponent の外側にある .field-slot で、かつ .empty-slot を含むもの)
+        // または子要素がないスロット
+        selector = ".play-mat:not(.play-mat-opponent) .field-slot:has(.empty-slot), .play-mat:not(.play-mat-opponent) .field-slot:empty"
+        break
+      case "enemy_unit":
+        // 相手のユニット (カードがあるスロット)
+        selector = ".play-mat-opponent .field-slot .card-wrapper"
+        break
+      case "ally_unit":
+        // 自分のユニット
+        selector = ".play-mat:not(.play-mat-opponent) .field-slot .card-wrapper"
+        break
+      case "enemy_board":
+        // 相手フィールド全体 (全体対象スペルなど)
+        selector = ".play-mat-opponent"
+        break
+      case "ally_board":
+        // 自分フィールド全体
+        selector = ".play-mat:not(.play-mat-opponent)" 
+        break
+    }
+
+    if (selector) {
+      this.element.querySelectorAll(selector).forEach(el => {
+        el.classList.add("target-highlight")
+      })
+    }
+  }
+
+  _clearHighlights() {
+    this.element.querySelectorAll(".target-highlight").forEach(el => {
+      el.classList.remove("target-highlight")
+    })
   }
 }
