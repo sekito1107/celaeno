@@ -2,5 +2,7 @@
 
 
 <%= turbo_stream.replace "player-status" do %>
-  <%= render Game::StatusBarComponent.new(game_player: @game_player, controls: true) %>
+  <div id="player-status" class="status-bar-wrapper player-status">
+    <%= render Game::StatusBarComponent.new(game_player: @game_player, controls: true) %>
+  </div>
 <% end %>
