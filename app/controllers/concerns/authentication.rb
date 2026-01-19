@@ -31,7 +31,12 @@ module Authentication
 
     def request_authentication
       session[:return_to_after_authenticating] = request.url
-      redirect_to new_session_path
+
+      respond_to do |format|
+        format.html { redirect_to new_session_path }
+        format.json { render json: { error: "You must be signed in to access this section" }, status: :unauthorized }
+        format.all { head :unauthorized }
+      end
     end
 
     def after_authentication_url
