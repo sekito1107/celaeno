@@ -21,6 +21,7 @@ class ResolveSpells
         game_card.log_event!(:spell_activation, {
           card_name: game_card.card.name,
           key_code: game_card.card.key_code,
+          image_name: resolve_image_name(game_card.card),
           target_id: target&.id,
           target_ids: targets.map(&:id),
           target_type: target_type
@@ -80,5 +81,23 @@ class ResolveSpells
   def determine_target_type(targets)
     return "unit" if targets.empty?
     targets.first.is_a?(GamePlayer) ? "player" : "unit"
+  end
+
+  def resolve_image_name(card)
+    # Card::BaseComponent と同様のフォールバックロジック
+    return card.image_name if card.image_name.present?
+
+    name_str = card.name || ""
+    if card.spell?
+      "art_ritual.png"
+    elsif name_str.include?("ダゴン") || name_str.include?("深きもの")
+      "art_dagon.png"
+    elsif name_str.include?("信者")
+      "art_cultist.png"
+    elsif name_str.include?("ショゴス") || name_str.include?("ハイドラ") || name_str.include?("クトゥルフ")
+      "art_shoggoth.png"
+    else
+      "art_cultist.png"
+    end
   end
 end
