@@ -58,4 +58,16 @@ class Game::FieldComponent < ApplicationComponent
   def right_slot_card
     slot_card(:right)
   end
+
+  def current_turn
+    @game_player.game.turns.find_by(turn_number: @game_player.game.current_turn_number)
+  end
+
+  def unit_limit
+    current_turn&.unit_summon_limit || 0
+  end
+
+  def units_summoned
+    current_turn&.units_summoned_count(@game_player.user) || 0
+  end
 end

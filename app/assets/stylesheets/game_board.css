@@ -540,29 +540,43 @@
 
 .san-badge {
   right: 3%; /* Final micro-adjustment */
-  color: #ddeeff;
   text-shadow: 0 -1px 0 #005, 0 0 8px #0af, 0 2px 4px #000;
 }
 
-.unit-badge {
-  top: 5px; /* Position at the top */
-  left: 50%;
-  transform: translateX(-50%);
+/* Field Center Wrapper to hold Slots + Summon Info */
+.field-center-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.unit-summon-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: #ccc;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  backdrop-filter: blur(4px);
+  pointer-events: none; /* Let clicks pass through if needed */
+}
+
+.unit-summon-info .label {
+  color: #888;
+  font-size: 0.7rem;
+}
+
+.unit-summon-info .value {
   color: #fff;
-  text-shadow: 0 0 5px #000;
-  width: auto; /* Allow width to grow */
-  min-width: 40px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 12px;
-  padding: 2px 8px;
-  height: auto;
-  font-size: 1rem;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
-
-.unit-badge .stat-value {
-    font-size: 0.9rem; /* Small font size for count */
-}
-
 
 /* --- Sanity Animations (Progressive) --- */
 

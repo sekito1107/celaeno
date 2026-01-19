@@ -34,18 +34,6 @@ class Game::StatusBarComponent < ApplicationComponent
     @game_player.insane?
   end
 
-  def current_turn
-    @game_player.game.turns.find_by(turn_number: @game_player.game.current_turn_number)
-  end
-
-  def unit_limit
-    current_turn&.unit_summon_limit || 0
-  end
-
-  def units_summoned
-    current_turn&.units_summoned_count(@game_player.user) || 0
-  end
-
   SANITY_CRITICAL_THRESHOLD = 5
   SANITY_LOW_THRESHOLD = 10
   SANITY_WARNING_THRESHOLD = 15
