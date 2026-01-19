@@ -1028,3 +1028,13 @@
     animation: none;
   }
 }
+
+/* Global Override: Disable all hover animations when a card is selected */
+/* Allows the selected card itself to remain 'popped' (via .selected class) */
+.game-board.has-selection .card-interactive:hover .card-wrapper:not(.selected),
+.game-board.has-selection .field-slot:hover .card-wrapper:not(.selected),
+.game-board.has-selection .hand-card-wrapper:hover .card-wrapper:not(.selected) {
+  transform: var(--card-base-transform, rotate(0deg)) !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.6) !important; /* Reset to default shadow */
+  z-index: 1 !important;
+}
