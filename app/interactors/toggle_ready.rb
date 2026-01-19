@@ -24,6 +24,9 @@ class ToggleReady
         context.fail!(message: result.message) if result.failure?
 
         context.phase_completed = true
+
+        # バトルログと盤面更新を配信
+        Game::BroadcastBattleLogs.call(game: game, logs: turn.battle_logs)
       else
         context.phase_completed = false
       end

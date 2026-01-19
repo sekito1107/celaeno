@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { api } from "utils/api"
+import { createConsumer } from "@rails/actioncable"
 
 // Connects to data-controller="game--board"
 export default class extends Controller {
@@ -11,6 +12,31 @@ export default class extends Controller {
   connect() {
     this.selectedCardId = null
     this.selectedCardType = null
+
+    this.consumer = createConsumer()
+    this.channel = this.consumer.subscriptions.create(
+      { channel: "GameChannel", game_id: this.gameIdValue },
+      {
+        received: this.handleMessage.bind(this)
+      }
+    )
+  }
+
+  disconnect() {
+    this.channel?.unsubscribe()
+    this.consumer?.disconnect()
+  }
+
+  handleMessage(data) {
+    if (data.type === "board_update") {
+        if (window.Turbo) {
+             window.Turbo.visit(window.location.href, { action: "replace" })
+        } else {
+             window.location.reload()
+        }
+    } else if (data.type === "battle_logs") {
+        console.table(data.logs)
+    }
   }
 
   // 詳細表示の更新（イベント受信）
