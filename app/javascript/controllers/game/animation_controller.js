@@ -6,6 +6,11 @@ export default class extends Controller {
          currentPlayerId: Number
   }
 
+  connect() {
+    this.isAnimating = false
+    this.queue = []
+  }
+
   // ... (connect, etc - existing code)
 
 
