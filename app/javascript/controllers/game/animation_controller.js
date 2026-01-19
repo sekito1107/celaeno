@@ -43,11 +43,42 @@ export default class extends Controller {
   }
 
   async playCombatPhase(combatLogs) {
-    // 全ての攻撃を同時に開始する（一斉攻撃）
-    if (combatLogs.length > 0) {
-      await Promise.all(combatLogs.map(log => this.playLog(log)))
-      // 演出終了後に少し待機
-      await this.delay(500)
+    // 画面上の列（Column）ごとにウェーブを分ける
+    const waves = [[], [], []]
+
+    combatLogs.forEach(log => {
+      const attackerId = log.details.attacker_id
+      const attackerEl = document.querySelector(`#game-card-${attackerId}`)
+      if (!attackerEl) return
+
+      const waveIndex = this._calculateWaveIndex(log.details.attacker_position, attackerEl)
+      if (waveIndex !== -1) {
+        waves[waveIndex].push(log)
+      } else {
+        waves[0].push(log)
+      }
+    })
+
+    for (const waveLogs of waves) {
+      if (waveLogs.length > 0) {
+        // 同じ列の攻撃を同時に再生
+        await Promise.all(waveLogs.map(log => this.playLog(log)))
+        await this.delay(300)
+      }
+    }
+  }
+
+  _calculateWaveIndex(position, element) {
+    const isOpponent = element.closest('.play-mat-opponent') !== null
+    
+    // Column 0: 自分Left & 相手Right
+    // Column 1: 自分Center & 相手Center
+    // Column 2: 自分Right & 相手Left
+    switch (position) {
+      case "left":   return isOpponent ? 2 : 0
+      case "center": return 1
+      case "right":  return isOpponent ? 0 : 2
+      default:       return -1
     }
   }
 
