@@ -35,6 +35,12 @@ class Dice
     sides = match[2].to_i
     modifier = match[3].to_i
 
+    # 0面ダイスは補正値のみ（Dice.rollと同様）
+    if sides == 0
+      value = [ modifier, 0 ].max
+      return [ value, value ]
+    end
+
     min = [ count * 1 + modifier, 0 ].max
     max = [ count * sides + modifier, 0 ].max
 
