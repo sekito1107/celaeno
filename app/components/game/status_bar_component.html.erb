@@ -10,7 +10,7 @@
     <div class="stat-badge hp-badge"
          data-controller="game--countdown"
          data-game--countdown-current-value="<%= hp %>"
-         data-game--countdown-max-value="<%= 100 %>"> <%# TODO: Max HP value from model %>
+         data-game--countdown-max-value="<%= max_hp %>"> <%# TODO: Max HP value from model %>
       <div class="stat-value" data-game--countdown-target="value"><%= hp %></div>
     </div>
     
@@ -18,7 +18,7 @@
          data-controller="game--countdown"
          data-game--countdown-current-value="<%= san %>"
          data-game--countdown-user-id-value="<%= @game_player.user_id %>"
-         data-game--countdown-max-value="<%= 100 %>"
+         data-game--countdown-max-value="<%= max_san %>"
          data-action="game--status:update-san@window->game--countdown#updateFromEvent">
       <div class="stat-value" data-game--countdown-target="value"><%= san %></div>
     </div>
