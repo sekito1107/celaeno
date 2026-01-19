@@ -150,6 +150,7 @@ export default class extends Controller {
         this.selectedCardType = null
         element.setAttribute("data-game--card-selected-value", "false")
         this.element.classList.remove("has-selection")
+        this._clearHighlights()
         
         
         // ピン留め解除

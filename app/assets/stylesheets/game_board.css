@@ -1043,9 +1043,10 @@
 .target-highlight {
   box-shadow: 0 0 15px 5px rgba(100, 220, 255, 0.5) !important;
   border-color: rgba(100, 220, 255, 0.8) !important;
-  animation: target-highlight-pulse 1.5s infinite alternate;
+  animation: target-highlight-pulse 0.8s infinite alternate; /* Faster blink */
   z-index: 50 !important; /* Ensure it's above other elements but below selected card */
   cursor: pointer; /* Suggest interactivity */
+  transition: all 0.2s;
 }
 
 /* Adjust for Card Wrappers (which have rounded corners and specific shadows) */
@@ -1061,11 +1062,13 @@
 
 @keyframes target-highlight-pulse {
   from {
-    box-shadow: 0 0 10px 2px rgba(100, 220, 255, 0.3) !important;
-    border-color: rgba(100, 220, 255, 0.5) !important;
+    box-shadow: 0 0 5px 0px rgba(100, 220, 255, 0.1) !important;
+    border-color: rgba(100, 220, 255, 0.2) !important;
+    filter: brightness(1.0);
   }
   to {
-    box-shadow: 0 0 20px 8px rgba(100, 220, 255, 0.7) !important;
+    box-shadow: 0 0 25px 10px rgba(100, 220, 255, 0.8) !important;
     border-color: rgba(100, 220, 255, 1.0) !important;
+    filter: brightness(1.2); /* Make the element itself brighter */
   }
 }
