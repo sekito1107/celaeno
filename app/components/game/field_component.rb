@@ -134,8 +134,7 @@ class Game::FieldComponent < ApplicationComponent
         card_type: "cancel",
         action: "dblclick->game--board#cancelCard dragstart->game--board#dragstart"
       },
-      class: "draggable-source",
-      style: "height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;"
+      class: "draggable-source"
     }
   end
 end
