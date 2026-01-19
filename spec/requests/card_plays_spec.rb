@@ -99,4 +99,37 @@ RSpec.describe "CardPlays", type: :request do
       end
     end
   end
+    describe "DELETE /games/:game_id/card_plays/:game_card_id" do
+    let!(:move) { create(:move, turn: turn, user: player_user, game_card: game_card, cost: 1) }
+
+    context "ログイン時" do
+      before { sign_in player_user }
+
+      context "正常系" do
+        it "JSONリクエストに対して成功レスポンスを返すこと" do
+          delete destroy_game_card_plays_path(game, game_card.id), as: :json
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)["status"]).to eq("success")
+          expect(JSON.parse(response.body)["message"]).to eq("アクションをキャンセルしました")
+        end
+      end
+
+      context "異常系" do
+        context "CancelCardPlay Interactorが失敗した場合" do
+          before do
+            allow(CancelCardPlay).to receive(:call).and_return(double(success?: false, message: "キャンセルできません"))
+          end
+
+          it "エラーレスポンスを返すこと" do
+            delete destroy_game_card_plays_path(game, game_card.id), as: :json
+
+            expect(response).to have_http_status(:unprocessable_content)
+            expect(JSON.parse(response.body)["status"]).to eq("error")
+            expect(JSON.parse(response.body)["message"]).to eq("キャンセルできません")
+          end
+        end
+      end
+    end
+  end
 end

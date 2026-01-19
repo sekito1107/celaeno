@@ -23,5 +23,27 @@ export const api = {
     } else {
       throw new Error(data.message || "Request failed")
     }
+  },
+
+  async delete(url) {
+    const request = new FetchRequest("delete", url, {
+      contentType: "application/json",
+      responseKind: "json"
+    })
+    
+    const response = await request.perform()
+    let data = {}
+    
+    try {
+      data = await response.json
+    } catch (e) {
+      // JSON parse error
+    }
+
+    if (response.ok) {
+      return data
+    } else {
+      throw new Error(data.message || "Request failed")
+    }
   }
 }

@@ -109,4 +109,19 @@ class Game::FieldComponent < ApplicationComponent
       "-#{min_total}~#{max_total}"
     end
   end
+
+  def cancellation_attributes(card)
+    return {} unless card.location_resolving?
+
+    {
+      draggable: "true",
+      data: {
+        card_id: card.id,
+        card_type: "cancel",
+        action: "dblclick->game--board#cancelCard dragstart->game--board#dragstart"
+      },
+      class: "draggable-source",
+      style: "height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;"
+    }
+  end
 end

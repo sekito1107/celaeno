@@ -15,7 +15,17 @@
                     }
                   }) do %>
         <% if left_slot_card %>
-          <%= render Game::CardComponent.new(card_entity: left_slot_card, variant: :field) %>
+          <% if opponent? %>
+            <%= render Game::CardComponent.new(card_entity: left_slot_card, variant: :field) %>
+          <% else %>
+            <% if left_slot_card.location_resolving? %>
+              <%= tag.div **cancellation_attributes(left_slot_card) do %>
+                <%= render Game::CardComponent.new(card_entity: left_slot_card, variant: :field) %>
+              <% end %>
+            <% else %>
+              <%= render Game::CardComponent.new(card_entity: left_slot_card, variant: :field) %>
+            <% end %>
+          <% end %>
         <% else %>
           <div class="empty-slot"></div>
         <% end %>
@@ -29,7 +39,17 @@
                     }
                   }) do %>
         <% if center_slot_card %>
-          <%= render Game::CardComponent.new(card_entity: center_slot_card, variant: :field) %>
+          <% if opponent? %>
+            <%= render Game::CardComponent.new(card_entity: center_slot_card, variant: :field) %>
+          <% else %>
+            <% if center_slot_card.location_resolving? %>
+              <%= tag.div **cancellation_attributes(center_slot_card) do %>
+                 <%= render Game::CardComponent.new(card_entity: center_slot_card, variant: :field) %>
+              <% end %>
+            <% else %>
+               <%= render Game::CardComponent.new(card_entity: center_slot_card, variant: :field) %>
+            <% end %>
+          <% end %>
         <% else %>
           <div class="empty-slot"></div>
         <% end %>
@@ -43,7 +63,17 @@
                     }
                   }) do %>
         <% if right_slot_card %>
-          <%= render Game::CardComponent.new(card_entity: right_slot_card, variant: :field) %>
+          <% if opponent? %>
+             <%= render Game::CardComponent.new(card_entity: right_slot_card, variant: :field) %>
+          <% else %>
+            <% if right_slot_card.location_resolving? %>
+              <%= tag.div **cancellation_attributes(right_slot_card) do %>
+                 <%= render Game::CardComponent.new(card_entity: right_slot_card, variant: :field) %>
+              <% end %>
+            <% else %>
+               <%= render Game::CardComponent.new(card_entity: right_slot_card, variant: :field) %>
+            <% end %>
+          <% end %>
         <% else %>
           <div class="empty-slot"></div>
         <% end %>
