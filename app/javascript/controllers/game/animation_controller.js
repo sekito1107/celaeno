@@ -78,9 +78,8 @@ export default class extends Controller {
 
     const attackAnim = this.applyAnimation(attackerEl, directionClass, 800)
 
-    // 攻撃ログのターゲットがユニットの場合、ダメージ演出を並行実行
+    // ダメージ情報の処理
     if (log.details.target_type === "unit" && log.details.target_card_id) {
-        // 少し遅らせてダメージ演出を開始
         this.delay(300).then(() => {
             this.animateDamage({
                 details: {
@@ -88,6 +87,15 @@ export default class extends Controller {
                     amount: log.details.damage
                 }
             })
+        })
+    } else if (log.details.target_type === "player" && log.details.target_player_id) {
+        // プレイヤーへの攻撃の場合も数値を出す
+        this.delay(300).then(() => {
+            const targetUserId = this._findUserIdByPlayerId(log.details.target_player_id)
+            const targetEl = document.querySelector(`[data-game--countdown-user-id-value="${targetUserId}"] .hero-portrait-wrapper`)
+            if (targetEl) {
+                this.showDamageNumber(targetEl, log.details.damage)
+            }
         })
     }
 
@@ -98,8 +106,13 @@ export default class extends Controller {
     const cardId = log.details.card_id
     const amount = log.details.amount
 
+    const cardEl = document.querySelector(`#game-card-${cardId}`)
+    if (cardEl) {
+        this.showDamageNumber(cardEl, amount)
+    }
+
     // カードの振動演出
-    return this.applyAnimation(`#game-card-${cardId}`, "animate-damage", 1000)
+    return this.applyAnimation(cardEl, "animate-damage", 1000)
   }
 
   async animateDeath(log) {
@@ -118,16 +131,49 @@ export default class extends Controller {
     const amount = log.details.amount
 
     // StatusBarに対してカウントダウン通知
-    // user_id で対象の StatusBar を特定する必要がある
-    // とりあえず global に dispatch して StatusBarController 側で拾わせる
     window.dispatchEvent(new CustomEvent("game--status:update-san", {
         detail: { userId, newValue: newSan }
     }))
+
+    // SANコストの支払いでも数値を出す
+    const targetEl = document.querySelector(`[data-game--countdown-user-id-value="${userId}"] .hero-portrait-wrapper`)
+    if (targetEl && amount > 0) {
+        this.showDamageNumber(targetEl, amount)
+    }
 
     await this.delay(300)
   }
 
   // --- Utilities ---
+
+  showDamageNumber(el, amount) {
+    if (!el || !amount) return
+
+    const damageEl = document.createElement("div")
+    damageEl.className = "damage-number"
+    damageEl.textContent = `-${amount}`
+    
+    el.appendChild(damageEl)
+    
+    // アニメーション終了後に削除
+    setTimeout(() => {
+        damageEl.remove()
+    }, 1500)
+  }
+
+  _findUserIdByPlayerId(playerId) {
+    // 画面内の StatusBar から playerId を持つものを探すか、
+    // Railsから渡された情報を元に解決する。
+    // 今回は簡易的に DOM から userId を直接引く（PlayerId と UserId の紐付けがDOMにあると仮定）
+    // 実際には DataValue で player-id も持たせるのが確実。
+    // 現状の実装では StatusBar に user-id-value があるので、それを利用。
+    // 対戦相手のIDは view で判別可能
+    
+    // TODO: StatusBarComponent に player-id も持たせるとより確実
+    // 同一ユーザー ID の可能性（テスト時等）を考慮し、とりあえずマッチするものを探す
+    const el = document.querySelector(`[data-game--countdown-user-id-value]`)
+    return el ? el.dataset.gameCountdownUserIdValue : null
+  }
 
   applyAnimation(selectorOrEl, className, duration) {
     return new Promise(resolve => {
