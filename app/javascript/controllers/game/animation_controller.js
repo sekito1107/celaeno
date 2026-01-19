@@ -118,7 +118,18 @@ export default class extends Controller {
 
   async animateDeath(log) {
     const cardId = log.details.card_id
-    return this.applyAnimation(`#game-card-${cardId}`, "animate-death", 1500)
+    const cardEl = document.querySelector(`#game-card-${cardId}`)
+    const anim = this.applyAnimation(cardEl, "animate-death", 1500)
+    
+    // アニメーション完了後、リロードまで一瞬表示が戻るのを防ぐため非表示にする
+    anim.then(() => {
+        if (cardEl) {
+            cardEl.style.opacity = "0"
+            cardEl.style.pointerEvents = "none"
+        }
+    })
+
+    return anim
   }
 
   async animateSpell(log) {
