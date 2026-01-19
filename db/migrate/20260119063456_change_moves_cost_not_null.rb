@@ -1,6 +1,6 @@
 class ChangeMovesCostNotNull < ActiveRecord::Migration[8.1]
   def up
-    Move.where(cost: nil).update_all(cost: 0)
+    execute "UPDATE moves SET cost = 0 WHERE cost IS NULL"
     change_column :moves, :cost, :integer, null: false, default: 0
   end
 
