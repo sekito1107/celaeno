@@ -25,16 +25,30 @@ class RevealCards
       # ボードに配置（召喚）
       game_card.summon_to!(game_card.position)
 
-      game_card.log_event!(:unit_revealed, {
+      # Deferred Logging: コスト情報をログに含める
+      log_details = {
         card_id: game_card.id,
         card_name: game_card.card.name,
         key_code: game_card.card.key_code,
         position: game_card.position,
         owner_player_id: game_card.game_player_id
-      })
+      }
+
+      cost_info = context.pending_costs&.[](game_card.id)
+      if cost_info
+        log_details.merge!(
+          cost: cost_info[:amount],
+          current_san: cost_info[:current_san],
+          user_id: cost_info[:user_id]
+        )
+      end
+
+      game_card.log_event!(:unit_revealed, log_details)
 
       # 召喚時効果をトリガー
       game_card.trigger(:on_play)
+
+      context.pending_costs&.delete(game_card.id) if cost_info
     end
   end
 end

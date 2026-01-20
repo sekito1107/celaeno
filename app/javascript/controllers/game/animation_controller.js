@@ -162,6 +162,20 @@ export default class extends Controller {
   // --- Animation Implementation ---
 
   async animateReveal(log) {
+    // Embedded Cost Handling
+    if (log.details.cost !== undefined && log.details.current_san !== undefined) {
+        const userId = log.details.user_id || this._findUserIdByPlayerId(log.details.owner_player_id)
+        if (userId != null) {
+          this.animatePayCost({
+            details: {
+              user_id: Number(userId),
+              amount: log.details.cost,
+              current_san: log.details.current_san
+            }
+          })
+        }
+    }
+  
     const cardId = log.details.card_id
     let cardEl = document.querySelector(`#game-card-${cardId}`)
     if (!cardEl) return
@@ -284,6 +298,20 @@ export default class extends Controller {
   }
 
   async animateSpell(log) {
+    // Embedded Cost Handling
+    if (log.details.cost !== undefined && log.details.current_san !== undefined) {
+      const userId = log.details.user_id || this._findUserIdByPlayerId(log.details.owner_player_id)
+      if (userId != null) {
+        this.animatePayCost({
+          details: {
+            user_id: Number(userId),
+            amount: log.details.cost,
+            current_san: log.details.current_san
+          }
+        })
+      }
+    }
+
     const cardId = log.details.card_id
     const cardName = log.details.card_name || "SPELL CARD" // サーバーから渡ってくる想定
     const keyCode = log.details.key_code 

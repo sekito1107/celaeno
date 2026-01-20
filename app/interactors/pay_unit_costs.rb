@@ -4,6 +4,11 @@ class PayUnitCosts
   def call
     return if context.game.finished?
 
-    PayResolvePhaseCosts.call(context.to_h.merge(target_card_types: [ :unit ]))
+    result = PayResolvePhaseCosts.call(context.to_h.merge(target_card_types: [ :unit ]))
+
+    if result.pending_costs
+      context.pending_costs ||= {}
+      context.pending_costs.merge!(result.pending_costs)
+    end
   end
 end

@@ -37,10 +37,10 @@ class GamePlayer < ApplicationRecord
     game_cards.where(location: :graveyard).order(:updated_at, :id)
   end
 
-  def pay_cost!(amount)
+  def pay_cost!(amount, silent: false)
     new_san = [ san - amount, 0 ].max
     update!(san: new_san)
-    log_event!(:pay_cost, { amount: amount, current_san: new_san })
+    log_event!(:pay_cost, { amount: amount, current_san: new_san, user_id: user_id }) unless silent
   end
 
   def insane?

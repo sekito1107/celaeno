@@ -18,7 +18,8 @@ class ResolveSpells
       target_type = determine_target_type(targets)
 
       ActiveRecord::Base.transaction do
-        game_card.log_event!(:spell_activation, {
+        # Deferred Logging: コスト情報をログに含める
+        log_details = {
           card_name: game_card.card.name,
           key_code: game_card.card.key_code,
           image_path: game_card.card.resolved_image_path,
@@ -26,7 +27,17 @@ class ResolveSpells
           target_id: target&.id,
           target_ids: targets.map(&:id),
           target_type: target_type
-        })
+        }
+
+        if context.pending_costs && (cost_info = context.pending_costs[game_card.id])
+          log_details.merge!(
+            cost: cost_info[:amount],
+            current_san: cost_info[:current_san],
+            user_id: cost_info[:user_id]
+          )
+        end
+
+        game_card.log_event!(:spell_activation, log_details)
 
         # ターゲットが存在するか確認
         if target_sym == :selected_target && target.nil?
@@ -40,6 +51,9 @@ class ResolveSpells
         # スペルは効果発動後に墓地へ
         game_card.discard!
       end
+
+      # 正常終了後に削除
+      context.pending_costs.delete(game_card.id) if context.pending_costs
     end
   end
 
