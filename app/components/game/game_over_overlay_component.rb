@@ -34,16 +34,31 @@ class Game::GameOverOverlayComponent < ApplicationComponent
     @result == :draw && @reason == :san
   end
 
+  def mutual_destruction?
+    @result == :draw && @reason == :hp
+  end
+
   def container_classes
     classes = [ "game-over-overlay" ]
     if mutual_insanity?
       classes << "mutual-insanity"
+    elsif mutual_destruction?
+      classes << "mutual-destruction"
     elsif sanity_death?
       classes << "sanity-death"
     else
       classes << @result.to_s
+      classes << determine_reason_class
     end
     classes.join(" ")
+  end
+
+  def determine_reason_class
+    case @reason
+    when :hp then "hp-death"
+    when :deck then "deck-death"
+    else "standard"
+    end
   end
 
   private
