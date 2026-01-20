@@ -251,7 +251,7 @@
   animation-delay: 0.2s;
 }
 /* Buff Animation */
-.animate-buff {
+.animate-buff .simple-frame {
   animation: buff-bounce 0.8s ease-out;
 }
 
