@@ -42,9 +42,11 @@ export default class extends Controller {
           combatLogs.push(this.queue.shift())
         }
         await this.playCombatPhase(combatLogs)
+        await this.delay(500) // Phase transition delay
       } else {
         const log = this.queue.shift()
         await this.playLog(log)
+        await this.delay(600) // General log delay
       }
     }
   }
@@ -70,7 +72,7 @@ export default class extends Controller {
       if (waveLogs.length > 0) {
         // 同じ列の攻撃を同時に再生
         await Promise.all(waveLogs.map(log => this.playLog(log)))
-        await this.delay(300)
+        await this.delay(800) // Slower wave transition
       }
     }
   }
