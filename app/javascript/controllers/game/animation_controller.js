@@ -28,6 +28,14 @@ export default class extends Controller {
       await this.processQueue()
     } finally {
       this.isAnimating = false
+      
+      if (this.queue.length > 0) {
+        // 終了間際に追加されたログを再処理するために再帰呼び出し
+        // 引数に空配列を渡すのは、すでにthis.queueに積まれているため
+        this.playLogs({ detail: { logs: [] } })
+        return
+      }
+
       // 全てのアニメーション完了を通知
       this.dispatch("finished", { bubbles: true })
     }
