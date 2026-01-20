@@ -42,9 +42,10 @@ class Card < ApplicationRecord
     if desc.include?("対象")
       if desc.include?("味方")
         "ally_unit"
-      # Default to enemy_unit if explicitly "enemy" or unsure (offensive spells)
-      else
+      elsif desc.include?("敵")
         "enemy_unit"
+      else
+        "any_unit"
       end
     elsif desc.include?("敵の全ユニット")
       "enemy_board"

@@ -384,6 +384,10 @@ export default class extends Controller {
         // 自分のユニット
         selector = ".play-mat:not(.play-mat-opponent) .field-slot .card-wrapper"
         break
+      case "any_unit":
+        // 敵味方問わず全てのユニット
+        selector = ".play-mat:not(.play-mat-opponent) .field-slot .card-wrapper, .play-mat-opponent .field-slot .card-wrapper"
+        break
       case "enemy_board":
         // 相手フィールド全体 (ユニットゾーンのみ)
         selector = ".play-mat-opponent .field-slots-area"
