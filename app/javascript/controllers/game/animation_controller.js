@@ -109,6 +109,9 @@ export default class extends Controller {
       case "pay_cost":
         await this.animatePayCost(log)
         break
+      case "effect_modifier_added":
+        await this.animateModifierAdded(log)
+        break
       default:
         // 未実装のイベントは0.1秒待機して飛ばす（ログが詰まらないように）
         await this.delay(100)
@@ -360,6 +363,34 @@ export default class extends Controller {
     }
 
     await this.delay(300)
+  }
+
+  async animateModifierAdded(log) {
+    const cardId = log.details.target_id
+    const modifierType = log.details.modifier_type
+    const currentAttack = log.details.current_attack
+    const currentHp = log.details.current_hp
+
+    const cardEl = document.querySelector(`#game-card-${cardId}`)
+    if (!cardEl) return
+
+    this._ensureActive(cardEl)
+
+    if (modifierType && modifierType.includes("attack") && currentAttack !== undefined) {
+         console.log("[DEBUG] Dispatching game--card:update-attack", { cardId, currentAttack })
+         cardEl.dispatchEvent(new CustomEvent("game--card:update-attack", {
+             detail: { newValue: currentAttack }
+         }))
+    }
+    
+    if (modifierType && modifierType.includes("hp") && currentHp !== undefined) {
+         cardEl.dispatchEvent(new CustomEvent("game--card:update-hp", {
+             detail: { newValue: currentHp }
+         }))
+    }
+    
+    // 汎用バフエフェクト
+    return this.applyAnimation(cardEl, "animate-buff", 800)
   }
 
   // --- Utilities ---

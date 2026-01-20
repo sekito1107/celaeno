@@ -63,9 +63,10 @@ class Game::CardComponent < ApplicationComponent
       game__card_detail_html_value: detail_html,
       game__card_selected_value: false,
       game__card_target_type_hint_value: card_source&.target_type,
-      game__countdown_current_value: @card_entity.respond_to?(:current_hp) ? @card_entity.current_hp : nil,
+      game__countdown_hp_value: @card_entity.respond_to?(:current_hp) ? @card_entity.current_hp : nil,
+      game__countdown_attack_value: @card_entity.respond_to?(:total_attack) ? @card_entity.total_attack : nil,
       game__board_target: "card",
-      action: base_actions.join(" ") + " game--card:update-hp->game--countdown#updateValue"
+      action: base_actions.join(" ") + " game--card:update-hp->game--countdown#updateHp game--card:update-attack->game--countdown#updateAttack"
     }
 
     # Set draggable HTML attribute explicitly

@@ -35,7 +35,7 @@
         <div class="simple-stats-row">
           <div class="stat-group attack-group <%= attack_buffed? ? 'text-buffed' : '' %>">
             <span class="stat-icon">⚔️</span>
-            <span class="stat-value"><%= total_attack %></span>
+            <span class="stat-value" data-game--countdown-target="attack"><%= total_attack %></span>
           </div>
 
           <% if has_threshold? %>
@@ -47,7 +47,7 @@
 
           <div class="stat-group hp-group <%= damaged? ? 'text-damaged' : '' %>">
             <span class="stat-icon">♥️</span>
-            <span class="stat-value" data-game--countdown-target="value"><%= hp %></span>
+            <span class="stat-value" data-game--countdown-target="hp"><%= hp %></span>
           </div>
         </div>
       <% end %>
