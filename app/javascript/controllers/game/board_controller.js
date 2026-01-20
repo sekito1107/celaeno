@@ -42,12 +42,19 @@ export default class extends Controller {
     if (animationController && animationController.isAnimating) {
         event.preventDefault()
         
+        let resolved = false
         // アニメーション完了後に再開
         const resumeRender = () => {
+             if (resolved) return
+             resolved = true
+             clearTimeout(timeoutId)
              this.element.removeEventListener("game--animation:finished", resumeRender)
              event.detail.render(event.detail.newStream)
         }
         this.element.addEventListener("game--animation:finished", resumeRender)
+        
+        // フォールバック: 10秒後に強制的にレンダリング
+        const timeoutId = setTimeout(resumeRender, 10000)
     }
   }
 
@@ -327,7 +334,7 @@ export default class extends Controller {
         
         if (response.status === "success") {
             // 成功したらリロード（PR 19でTurbo化）
-            window.location.reload()
+            this.refreshBoard()
         }
     } catch (error) {
         // Log failure but do not alert user (e.g. invalid move)
@@ -358,7 +365,7 @@ export default class extends Controller {
         const response = await api.delete(`/games/${this.gameIdValue}/card_plays/${cardId}`)
         
         if (response.status === "success") {
-            window.location.reload()
+            this.refreshBoard()
         }
     } catch (error) {
         console.error("Cancel failed:", error)

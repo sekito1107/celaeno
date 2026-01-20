@@ -14,23 +14,24 @@ class ResolveSpells
       target = game_card.target_game_card
 
       # ターゲット解決（ログ出力用）
-      targets = resolve_targets(game_card, target)
+      targets, target_sym = resolve_targets(game_card, target)
       target_type = determine_target_type(targets)
 
       ActiveRecord::Base.transaction do
         game_card.log_event!(:spell_activation, {
           card_name: game_card.card.name,
           key_code: game_card.card.key_code,
-          image_path: resolve_image_path(game_card.card),
+          image_path: game_card.card.resolved_image_path,
           owner_player_id: game_card.game_player_id,
           target_id: target&.id,
           target_ids: targets.map(&:id),
           target_type: target_type
         })
 
-        # ターゲットが存在するか確認（対象指定スペルかつ、対象が盤面にいない場合は不発）
-        # ※全体攻撃系はtargetがnilでも発動するため、single targetの場合のみチェック
-        if target && target.location != "board"
+        # ターゲットが存在するか確認
+        if target_sym == :selected_target && target.nil?
+           game_card.log_event!(:spell_fizzle, { reason: "target_missing" })
+        elsif target && target.location != "board"
            game_card.log_event!(:spell_fizzle, { reason: "target_missing" })
         else
            game_card.trigger(:on_play, target)
@@ -52,7 +53,7 @@ class ResolveSpells
     else :selected_target
     end
 
-    resolve_target_sym(game_card, selected_target, target_sym)
+    [ resolve_target_sym(game_card, selected_target, target_sym), target_sym ]
   end
 
   def resolve_target_sym(game_card, selected_target, target_sym)
@@ -77,33 +78,5 @@ class ResolveSpells
   def determine_target_type(targets)
     return "none" if targets.empty?
     targets.first.is_a?(GamePlayer) ? "player" : "unit"
-  end
-
-  def resolve_image_path(card)
-    # Card::BaseComponent と同様のフォールバックロジック
-    image_name = if card.image_name.present?
-      card.image_name
-    else
-      name_str = card.name || ""
-      if card.spell?
-        "art_ritual.png"
-      elsif name_str.include?("ダゴン") || name_str.include?("深きもの")
-        "art_dagon.png"
-      elsif name_str.include?("信者")
-        "art_cultist.png"
-      elsif name_str.include?("ショゴス") || name_str.include?("ハイドラ") || name_str.include?("クトゥルフ")
-        "art_shoggoth.png"
-      else
-        "art_cultist.png"
-      end
-    end
-
-    # PropshaftなどのDigest付きパスを解決して返す
-    begin
-      ActionController::Base.helpers.asset_path("cards/#{image_name}")
-    rescue
-      # 失敗時はフォールバック（デッドリンクになる可能性はあるがエラーで止まるよりマシ）
-      "/assets/cards/#{image_name}"
-    end
   end
 end
