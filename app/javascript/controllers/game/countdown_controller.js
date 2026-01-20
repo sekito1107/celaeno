@@ -36,6 +36,7 @@ export default class extends Controller {
   // カード自身のHP更新
   updateHp(event) {
      const { newValue } = event.detail
+     if (!this.hasHpTarget) return
      this.animateTo(this.hpTarget, this.hpDisplay, newValue, (v) => {
        this.hpDisplay = v
        this.hpTarget.textContent = v
@@ -52,6 +53,7 @@ export default class extends Controller {
   // SAN更新
   updateSan(event) {
     const { newValue } = event.detail
+    if (!this.hasSanTarget) return
     this.animateTo(this.sanTarget, this.sanDisplay, newValue, (v) => {
       this.sanDisplay = v
       this.sanTarget.textContent = v
@@ -62,6 +64,7 @@ export default class extends Controller {
   // 攻撃力更新
   updateAttack(event) {
     const { newValue } = event.detail
+    if (!this.hasAttackTarget) return
     this.animateTo(this.attackTarget, this.attackDisplay, newValue, (v) => {
       this.attackDisplay = v
       this.attackTarget.textContent = v
