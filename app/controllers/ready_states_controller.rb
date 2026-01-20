@@ -12,10 +12,15 @@ class ReadyStatesController < ApplicationController
 
     # Force Turbo Stream render for local button update even if phase completes
     if result.success?
-      flash.now[:notice] = result.phase_completed ? "ターン終了" : "準備完了状態を変更しました"
       respond_to do |format|
-        format.turbo_stream { render :create }
-        format.html { redirect_to game_path(@game) }
+        format.turbo_stream do
+          flash.now[:notice] = result.phase_completed ? "ターン終了" : "準備完了状態を変更しました"
+          render :create
+        end
+        format.html do
+          flash[:notice] = result.phase_completed ? "ターン終了" : "準備完了状態を変更しました"
+          redirect_to game_path(@game)
+        end
       end
       return
     end

@@ -1,13 +1,9 @@
 /*
  * Celaeno - Call of Celaeno: Archive of the Great Old Ones
  * CSS Strategy: Vanilla CSS + CSS Variables (no Tailwind)
- * Theme: Abyssal Library (Final Refinement) - F@import 'animations.css';
-@import 'phase_transitions.css';
-@import 'madness_glow.css';
-@import 'shatter_effect.css'; - Removed as it does not exist */
-/* Since reset.css is not in the list, skipping it or assuming base styles handle it */
-
-/* @import statements removed - loaded via layout */
+ * Theme: Abyssal Library (Final Refinement)
+ * Note: Stylesheets are loaded via layout (stylesheet_link_tag)
+ */
 
 /* ===========================================
    CSS Variables - Abyssal Dark Theme

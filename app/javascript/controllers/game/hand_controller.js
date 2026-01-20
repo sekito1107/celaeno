@@ -18,9 +18,17 @@ export default class extends Controller {
     const currentCardIds = this.cardTargets.map(el => el.dataset.cardId).filter(id => id)
     const storedIdsJSON = sessionStorage.getItem(storageKey)
     
+    let storedIds = null
     if (storedIdsJSON) {
-      const storedIds = JSON.parse(storedIdsJSON)
-      
+      try {
+        storedIds = JSON.parse(storedIdsJSON)
+      } catch (e) {
+        console.warn("Invalid stored hand state, resetting:", e)
+        storedIds = null
+      }
+    }
+
+    if (Array.isArray(storedIds)) {
       // Find new cards (present in current but not in stored)
       const newCardIds = currentCardIds.filter(id => !storedIds.includes(id))
       

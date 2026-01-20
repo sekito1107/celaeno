@@ -101,7 +101,6 @@
 
 /* Main Text */
 .shatter-text {
-  font-family: 'Cinzel', serif;
   font-family: var(--font-display, 'Cinzel', serif);
   font-size: 6rem; /* Larger */
   color: #8b0000;
