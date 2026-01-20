@@ -4,7 +4,7 @@ RSpec.describe ResolveDamage, type: :interactor do
   let(:game) { create(:game, seed: 12345) }
   let(:user) { create(:user) }
   let(:opponent_user) { create(:user) }
-  let!(:player) { create(:game_player, game: game, user: user) }
+  let!(:player) { create(:game_player, game: game, user: user, hp: 20) }
   let!(:opponent) { create(:game_player, game: game, user: opponent_user, hp: 20) }
   let!(:turn) { create(:turn, game: game, turn_number: 1) }
 
@@ -168,7 +168,6 @@ RSpec.describe ResolveDamage, type: :interactor do
       end
 
       it 'HP DRAW（相打ち）としてゲームが終了する' do
-        player.update!(hp: 20)
         opponent.update!(hp: 20)
 
         described_class.call(attack_plan: attack_plan, game: game, turn: turn)
