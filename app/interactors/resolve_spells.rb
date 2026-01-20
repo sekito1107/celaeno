@@ -69,18 +69,13 @@ class ResolveSpells
       enemy_player.game_cards.where(location: :board)
     when :all_allies
       owner_player.game_cards.where(location: :board)
-    when :enemy_player
-      return [] unless enemy_player
-      [ enemy_player ] # GamePlayerオブジェクト
-    when :owner_player
-      [ owner_player ]
     else
       []
     end
   end
 
   def determine_target_type(targets)
-    return "unit" if targets.empty?
+    return "none" if targets.empty?
     targets.first.is_a?(GamePlayer) ? "player" : "unit"
   end
 
