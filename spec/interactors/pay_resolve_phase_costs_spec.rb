@@ -1,55 +1,142 @@
 require 'rails_helper'
 
 RSpec.describe PayResolvePhaseCosts, type: :interactor do
+  let(:game) { create(:game) }
+  let(:p1) { create(:game_player, game: game, san: 5) }
+  let(:p2) { create(:game_player, game: game, san: 5) }
+  let!(:turn) { create(:turn, game: game, turn_number: 1) }
+
+  # P1 plays a spell (Cost 10 -> Death)
+  let(:card1) { create(:card, :spell, cost: "1d10+10") }
+  let(:gc1) { create(:game_card, game: game, game_player: p1, card: card1, location: :resolving) }
+  let!(:move1) { create(:move, turn: turn, user: p1.user, game_card: gc1, cost: 10) }
+
+  # P2 plays a spell (Cost 10 -> Death)
+  let(:card2) { create(:card, :spell, cost: "1d10+10") }
+  let(:gc2) { create(:game_card, game: game, game_player: p2, card: card2, location: :resolving) }
+  let!(:move2) { create(:move, turn: turn, user: p2.user, game_card: gc2, cost: 10) }
+
   describe '.call' do
-    let(:game) { create(:game) }
-    let(:user) { create(:user) }
-    let(:game_player) { create(:game_player, game: game, user: user, san: 20) }
-    let(:turn) { create(:turn, game: game, turn_number: 1) }
+    context 'when both players die from costs (Mutual Kill scenario)' do
+      it 'pays all costs silently first, flushes logs, then finishes game' do
+        # Setup context
+        context = Interactor::Context.new(
+          game: game,
+          target_card_types: [ :spell ]
+        )
 
-    before do
-      allow(game).to receive(:current_turn_number).and_return(turn.turn_number)
-      # Game references turn via has_many turns
+        described_class.call(context)
 
-      # Setup moves with costs
-      # Setup moves with costs
-      card1 = create(:card)
-      card2 = create(:card)
-      game_card1 = create(:game_card, game: game, game_player: game_player, user: user, card: card1)
-      game_card2 = create(:game_card, game: game, game_player: game_player, user: user, card: card2)
+        # 1. Both SAN should be 0
+        expect(p1.reload.san).to eq(0)
+        expect(p2.reload.san).to eq(0)
 
-      # Move 1: Cost 3
-      create(:move, turn: turn, user: user, game_card: game_card1, action_type: :play, position: :left, cost: 3)
-      # Move 2: Cost 2
-      create(:move, turn: turn, user: user, game_card: game_card2, action_type: :play, position: :right, cost: 2)
+        # 2. Game should be finished
+        expect(game.reload.finished?).to be true
+
+        # 3. Logs should be flushed
+        logs = game.battle_logs.order(:id)
+
+        # Expect logs: Activation1 -> Pay1 -> Activation2 -> Pay2 -> GameEnd
+        # (Order depends on move creation order, assumed move1 then move2)
+
+        # Activation 1
+        expect(logs[0].event_type).to eq("spell_activation")
+        expect(logs[0].details['source_id']).to eq(gc1.id)
+
+        # Pay Cost 1
+        expect(logs[1].event_type).to eq("pay_cost")
+        expect(logs[1].details['user_id']).to eq(p1.user.id)
+
+        # Activation 2
+        expect(logs[2].event_type).to eq("spell_activation")
+        expect(logs[2].details['source_id']).to eq(gc2.id)
+
+        # Pay Cost 2
+        expect(logs[3].event_type).to eq("pay_cost")
+        expect(logs[3].details['user_id']).to eq(p2.user.id)
+
+        # Game Finish
+        expect(logs[4].event_type).to eq("game_finish")
+      end
     end
 
-    subject(:context) { described_class.call(game: game) }
+    context 'when no one dies' do
+      # Note: ResolveSpells looks for game_cards in :resolving.
+      # Create moves? ResolveSpells doesn't look at moves, it looks at game.game_cards... but specs usually create moves.
+      # But moves were already created in let! blocks above.
+      # Wait, let(:gc1) location is :resolving.
+      # But in the describe block, we created moves with cost 10.
+      # We need to override them here for cost 1.
 
-    it '全てのMoveのコスト合計分SANを消費すること' do
-      expect { context }.to change { game_player.reload.san }.by(-5)
-    end
+      # Overriding moves from let! is tricky if they are already referenced.
+      # Better to just use let and perform creation inside the context or just update them?
+      # RSpec let! forces creation before each example.
+      # So we can't easily override them inside context unless we redefine them.
 
-    context 'SANが足りない場合' do
+      # Let's redefine cost in the let blocks if possible, or update them in before block.
+
       before do
-        game_player.update!(san: 4)
+        move1.update!(cost: 1)
+        move2.update!(cost: 1)
+
+         # Reset SAN
+         p1.update!(san: 5)
+         p2.update!(san: 5)
+
+         # ResolveSpells needs target?
+         # gc1/gc2 are generic spells. ResolveSpells logic handles no target?
+         # Our code: target_sym = resolve_targets...
+         # If no target, and it requires target?
+         # Assuming card factory creates a valid spell.
+         # Let's mock ResolveSpells dependencies or ensure cards are simple.
+         allow_any_instance_of(ResolveSpells).to receive(:resolve_targets).and_return([ [], :none ])
+         allow_any_instance_of(ResolveSpells).to receive(:determine_target_type).and_return("none")
       end
 
-      it 'SANが0になり、死亡判定が行われること' do
-        expect(game).to receive(:check_player_death!).with(game_player)
-        context
-        expect(game_player.reload.san).to eq 0
-      end
-    end
+      it 'pays costs silently but DOES NOT flush logs (leaves them for ResolveSpells)' do
+         context = Interactor::Context.new(
+          game: game,
+          target_card_types: [ :spell ]
+        )
 
-    context 'コストがない場合' do
-      before do
-        Move.destroy_all
-      end
+        result = described_class.call(context)
 
-      it 'SANは消費されないこと' do
-        expect(game).not_to receive(:check_player_death!)
-        expect { context }.not_to change { game_player.reload.san }
+        # SAN Reduced
+        expect(p1.reload.san).to eq(4)
+        expect(p2.reload.san).to eq(4)
+
+        # Game NOT finished
+        expect(game.reload.finished?).to be false
+
+        # Context has pending costs
+        expect(result.pending_costs[gc1.id]).to be_present
+        expect(result.pending_costs[gc2.id]).to be_present
+
+        # NO logs generated by PayResolvePhaseCosts (waiting for ResolveSpells)
+        expect(game.battle_logs.count).to eq(0)
+
+        # Prevent actual discard to keep objects valid/checkable if needed, OR just checking logs is fine.
+        # But wait, ResolveSpells iterates game.game_cards....
+        # We need to make sure ResolveSpells actually finds them. They are in :resolving.
+
+        # Manually run ResolveSpells to verify embedded log
+        ResolveSpells.call(context)
+
+        logs = game.battle_logs.order(:id)
+        expect(logs.count).to eq(2) # Activation 1, Activation 2
+
+        # Check Activation 1 has cost and user_id
+        expect(logs[0].event_type).to eq("spell_activation")
+        expect(logs[0].details['cost']).to eq(1)
+        expect(logs[0].details['current_san']).to eq(4)
+        expect(logs[0].details['user_id']).to eq(p1.user.id)
+
+        # Check Activation 2 has cost and user_id
+        expect(logs[1].event_type).to eq("spell_activation")
+        expect(logs[1].details['cost']).to eq(1)
+        expect(logs[1].details['current_san']).to eq(4)
+        expect(logs[1].details['user_id']).to eq(p2.user.id)
       end
     end
   end

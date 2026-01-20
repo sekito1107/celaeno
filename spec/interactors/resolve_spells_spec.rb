@@ -9,7 +9,7 @@ RSpec.describe ResolveSpells, type: :interactor do
   let!(:turn) { create(:turn, game: game, turn_number: 1) }
 
   let(:spell_card) { create(:card, :spell, key_code: "test_spell") }
-  let(:spell_game_card) { create(:game_card, game: game, user: user, game_player: player, card: spell_card, location: :resolving) }
+  let(:spell_game_card) { create(:game_card, game: game, user: user, game_player: player, card: spell_card, location: :resolving, target_game_card: target_game_card) }
 
   let(:target_card) { create(:card, :unit) }
   let(:target_game_card) { create(:game_card, game: game, user: opponent_user, game_player: opponent, card: target_card, location: :board, position: :center) }
