@@ -3,16 +3,45 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["card"]
   static values = {
-    isOpponent: Boolean
+    isOpponent: Boolean,
+    gameId: String
   }
 
-  cardTargetConnected(element) {
-    if (element.hasAttribute("data-new-draw")) {
-      this.animateDraw(element)
-      // Remove attribute so it doesn't animate again if disconnected/reconnected rapidly
-      element.removeAttribute("data-new-draw")
-      element.classList.remove("animate-draw") // Remove CSS marker if present
+  connect() {
+    // Only animate for the owner's hand to avoid excessive animations for opponent (unless desired)
+    // Actually user requirement implies "Draw Animation" which generally means "I drew a card".
+    // Let's support both but maybe tune it.
+    
+    // Key unique to this game and this hand (player vs opponent)
+    const storageKey = `hand_cards_${this.gameIdValue}_${this.isOpponentValue ? 'opponent' : 'player'}`
+    
+    const currentCardIds = this.cardTargets.map(el => el.dataset.cardId).filter(id => id)
+    const storedIdsJSON = sessionStorage.getItem(storageKey)
+    
+    if (storedIdsJSON) {
+      const storedIds = JSON.parse(storedIdsJSON)
+      
+      // Find new cards (present in current but not in stored)
+      const newCardIds = currentCardIds.filter(id => !storedIds.includes(id))
+      
+      newCardIds.forEach(id => {
+        const cardEl = this.cardTargets.find(el => el.dataset.cardId === id)
+        if (cardEl) {
+           this.animateDraw(cardEl)
+        }
+      })
+    } else {
+      // First load (or cleared cache) - do not animate existing cards
+      // Just save state
     }
+    
+    // Save current state
+    sessionStorage.setItem(storageKey, JSON.stringify(currentCardIds))
+  }
+
+  // No longer used for detection, but kept if we need individual callbacks
+  cardTargetConnected(element) {
+     // Logic moved to connect() for batch processing based on full list
   }
 
   animateDraw(cardElement) {

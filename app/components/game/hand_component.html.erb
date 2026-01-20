@@ -1,12 +1,13 @@
 <div class="hand-container" 
      data-controller="game--hand" 
      data-action="dragover->game--board#dragover drop->game--board#drop"
+     data-game--hand-game-id-value="<%= @game_player.game.id %>"
      data-game--hand-is-opponent-value="<%= !viewer_is_owner? %>">
   <% if viewer_is_owner? %>
     <% cards.each do |game_card| %>
       <div class="hand-card-wrapper card-interactive" 
            data-game--hand-target="card"
-           <%= 'data-new-draw="true"'.html_safe if recently_drawn?(game_card) %>>
+           data-card-id="<%= game_card.id %>">
         <%= render Game::CardComponent.new(card_entity: game_card) %>
       </div>
     <% end %>
@@ -16,7 +17,7 @@
       <div class="hand-card-wrapper opponent-card" 
            style="--i: <%= i %>; --total: <%= cards.count %>;"
            data-game--hand-target="card"
-           <%= 'data-new-draw="true"' if recently_drawn?(game_card) %>>
+           data-card-id="<%= game_card.id %>">
         <div class="card-back"></div>
       </div>
     <% end %>

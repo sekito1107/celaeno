@@ -14,10 +14,7 @@ class Game::HandComponent < ApplicationComponent
     @viewer == @game_player.user
   end
 
-  def recently_drawn?(game_card)
-    # Check if the card was updated (moved to hand) within the last 10 seconds
-    # Using created_at might be safer if draws create new records, but likely they are moved.
-    # Assuming 'updated_at' changes when location changes.
-    game_card.updated_at > 10.seconds.ago
+  def render?
+    @game_player.present?
   end
 end
