@@ -51,7 +51,7 @@ class ResolveDamage
 
   def apply_all_damage(damage_results)
     damage_results.each do |result|
-      # ゲーム終了済みなら即中断
+      # ゲーム終了済みなら即中断（防御的チェック：即死効果等の将来拡張に備える）
       break if context.game.reload.finished?
       apply_single_attack(result)
     end
