@@ -383,3 +383,16 @@
     opacity: 1 !important;
   }
 }
+
+/* Move to Graveyard (Dynamic) */
+/* Requires --delta-x and --delta-y set by JS */
+.animate-move-to-graveyard {
+  animation: move-to-graveyard 0.8s ease-in-out forwards;
+}
+
+@keyframes move-to-graveyard {
+  to {
+    transform: translate(var(--delta-x, 0), var(--delta-y, 0)) scale(0.2) rotate(360deg);
+    opacity: 0;
+  }
+}
