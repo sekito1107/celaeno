@@ -1,110 +1,122 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static values = { 
+  static values = {
     hp: Number,
     san: Number, // Added SAN support
     attack: Number,
     max: Number,
-    userId: Number 
-  }
-  static targets = ["hp", "san", "attack", "bar"]
+    userId: Number,
+  };
+  static targets = ['hp', 'san', 'attack', 'bar'];
 
   connect() {
-    if (this.hasHpValue) this.hpDisplay = this.hpValue
-    if (this.hasSanValue) this.sanDisplay = this.sanValue
-    if (this.hasAttackValue) this.attackDisplay = this.attackValue
+    if (this.hasHpValue) this.hpDisplay = this.hpValue;
+    if (this.hasSanValue) this.sanDisplay = this.sanValue;
+    if (this.hasAttackValue) this.attackDisplay = this.attackValue;
   }
 
   // 外部からの更新（StatusBar等） - HP
   updateHpFromEvent(event) {
-    const { userId, newValue } = event.detail
+    const { userId, newValue } = event.detail;
     // 自分のStatusBarでなければ無視
-    if (this.hasUserIdValue && this.userIdValue !== userId) return
-    
-    this.updateHp({ detail: { newValue } })
+    if (this.hasUserIdValue && this.userIdValue !== userId) return;
+
+    this.updateHp({ detail: { newValue } });
   }
 
   // 外部からの更新（StatusBar等） - SAN
   updateSanFromEvent(event) {
-    const { userId, newValue } = event.detail
-    if (this.hasUserIdValue && this.userIdValue !== userId) return
-    
-    this.updateSan({ detail: { newValue } })
+    const { userId, newValue } = event.detail;
+    if (this.hasUserIdValue && this.userIdValue !== userId) return;
+
+    this.updateSan({ detail: { newValue } });
   }
 
   // カード自身のHP更新
   updateHp(event) {
-     const { newValue } = event.detail
-     if (!this.hasHpTarget) return
-     this.animateTo(this.hpTarget, this.hpDisplay, newValue, (v) => {
-       this.hpDisplay = v
-       this.hpTarget.textContent = v
-       
-       if (this.hasBarTarget && this.hasMaxValue) {
-         const max = this.maxValue || 0
-         const percentage = max > 0 ? (v / max) * 100 : 0
-         this.barTarget.style.width = `${percentage}%`
-       }
-     })
-     this.hpValue = newValue // Sync value
+    const { newValue } = event.detail;
+    if (!this.hasHpTarget) return;
+    this.animateTo(this.hpTarget, this.hpDisplay, newValue, (v) => {
+      this.hpDisplay = v;
+      this.hpTarget.textContent = v;
+
+      if (this.hasBarTarget && this.hasMaxValue) {
+        const max = this.maxValue || 0;
+        const percentage = max > 0 ? (v / max) * 100 : 0;
+        this.barTarget.style.width = `${percentage}%`;
+      }
+    });
+    this.hpValue = newValue; // Sync value
   }
 
   // SAN更新
   updateSan(event) {
-    const { newValue } = event.detail
-    if (!this.hasSanTarget) return
-    this.animateTo(this.sanTarget, this.sanDisplay, newValue, (v) => {
-      this.sanDisplay = v
-      this.sanTarget.textContent = v
-    }, "animate-pop-scale-san")
-    this.sanValue = newValue
+    const { newValue } = event.detail;
+    if (!this.hasSanTarget) return;
+    this.animateTo(
+      this.sanTarget,
+      this.sanDisplay,
+      newValue,
+      (v) => {
+        this.sanDisplay = v;
+        this.sanTarget.textContent = v;
+      },
+      'animate-pop-scale-san'
+    );
+    this.sanValue = newValue;
   }
 
   // 攻撃力更新
   updateAttack(event) {
-    const { newValue } = event.detail
-    if (!this.hasAttackTarget) return
+    const { newValue } = event.detail;
+    if (!this.hasAttackTarget) return;
     this.animateTo(this.attackTarget, this.attackDisplay, newValue, (v) => {
-      this.attackDisplay = v
-      this.attackTarget.textContent = v
-    })
-    this.attackValue = newValue // Sync value
+      this.attackDisplay = v;
+      this.attackTarget.textContent = v;
+    });
+    this.attackValue = newValue; // Sync value
   }
 
-  animateTo(element, start, end, updateCallback, animationClass = "animate-pop-scale") {
+  animateTo(
+    element,
+    start,
+    end,
+    updateCallback,
+    animationClass = 'animate-pop-scale'
+  ) {
     // Initial setup if start is undefined (e.g. first connect)
-    if (start === undefined) start = end 
-    if (start === end) return
+    if (start === undefined) start = end;
+    if (start === end) return;
 
-    const diff = end - start
-    const duration = 1000
-    const startTime = performance.now()
+    const diff = end - start;
+    const duration = 1000;
+    const startTime = performance.now();
 
     // アニメーション開始：拡大
     if (element) {
-      element.classList.add(animationClass)
+      element.classList.add(animationClass);
     }
 
     const step = (currentTime) => {
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const current = Math.round(start + diff * progress)
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const current = Math.round(start + diff * progress);
 
-      updateCallback(current)
+      updateCallback(current);
 
       if (progress < 1) {
-        requestAnimationFrame(step)
+        requestAnimationFrame(step);
       } else {
         // アニメーション終了
-        updateCallback(end)
-        
+        updateCallback(end);
+
         if (element) {
-          element.classList.remove(animationClass)
+          element.classList.remove(animationClass);
         }
       }
-    }
+    };
 
-    requestAnimationFrame(step)
+    requestAnimationFrame(step);
   }
 }

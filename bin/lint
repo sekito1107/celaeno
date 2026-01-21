@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+APP_ROOT = File.expand_path('..', __dir__)
+Dir.chdir(APP_ROOT) do
+  puts "Running RuboCop..."
+  rubocop_result = system("bin/rubocop -A")
+  
+  puts "\nRunning ESLint & Prettier..."
+  # Check if npm dependencies match package.json, install if not? 
+  # For now, just run the script.
+  js_result = system("yarn run lint:fix")
+
+
+  unless rubocop_result && js_result
+    puts "\nLint checks failed."
+    exit 1
+  end
+
+  puts "\nAll lint checks passed!"
+end
