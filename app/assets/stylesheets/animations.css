@@ -111,6 +111,26 @@
   }
 }
 
+/* SAN Damage Number Pop-up */
+.san-damage-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #00aaff;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 900;
+  font-size: 3.5rem;
+  text-shadow: 
+    0 0 10px #000,
+    0 0 20px #0055aa,
+    2px 2px 0 #000;
+  pointer-events: none;
+  z-index: 10000;
+  white-space: nowrap;
+  animation: damage-popup 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
 /* Heal Number Pop-up */
 .heal-number {
   position: absolute;
@@ -142,6 +162,19 @@
   position: relative;
   text-shadow: 0 0 10px rgba(255, 0, 0, 0.8); /* Add glow */
 }
+
+/* Scaling for SAN (Blue) */
+.animate-pop-scale-san {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: scale(2.0) !important; /* Increased scale and forced */
+  transform-origin: center center;
+  color: #00aaff;
+  z-index: 1000; /* Ensure on top */
+  display: inline-block;
+  position: relative;
+  text-shadow: 0 0 10px rgba(0, 170, 255, 0.8); /* Add glow */
+}
+
 
 
 /* --- Spell Cut-In Animation --- */

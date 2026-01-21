@@ -264,7 +264,22 @@ export default class extends Controller {
 
     const targetEl = document.querySelector(`[data-game--countdown-user-id-value="${targetUserId}"] .hero-portrait-wrapper`)
     if (targetEl) {
-        this._showFloatingNumber(targetEl, `-${damage}`, "damage-number")
+        // ダメージ数値の表示
+        // もしHPが変動せずSANのみ変動している場合、あるいはdamageが0でSANが減っている場合などを考慮
+        // 現状、サーバーからのdamageはHPダメージを指すことが一般的だが、
+        // SANダメージの場合は別途判定したい。
+        // ここでは、damage > 0 ならばHPダメージ（赤）、damage == 0 かつ currentSan < target_san (old) ???
+        // 引数の log.details には old_san は含まれていないため、damage > 0 なら赤、それ以外でSAN由来なら青、としたいが
+        // サーバー側で「SANダメージ」として damage フィールドを使っている場合は赤になってしまう。
+        
+        // とりあえず、標準的なHPダメージは赤。
+        if (damage > 0) {
+           this._showFloatingNumber(targetEl, `-${damage}`, "damage-number")
+        }
+        
+        // もしここでSAN減少も同時に表示したい場合（例：HPとSAN両方減る）、重ねて表示するか、
+        // あるいはSANダメージ専用のイベントがあるか。
+        // 現状の実装では animatePlayerDamage は主にHPダメージ用。
     }
 
     // StatusBarへ更新通知
@@ -431,7 +446,7 @@ export default class extends Controller {
     // SANコストの支払いでも数値を出す
     const targetEl = document.querySelector(`[data-game--countdown-user-id-value="${userId}"] .hero-portrait-wrapper`)
     if (targetEl && amount > 0) {
-        this._showFloatingNumber(targetEl, `-${amount}`, "damage-number")
+        this._showFloatingNumber(targetEl, `-${amount}`, "san-damage-number")
     }
 
     await this.delay(300)
