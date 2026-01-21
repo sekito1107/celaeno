@@ -1,49 +1,49 @@
-import { FetchRequest } from "@rails/request.js"
+import { FetchRequest } from '@rails/request.js';
 
 export const api = {
   async post(url, body = {}) {
-    const request = new FetchRequest("post", url, {
+    const request = new FetchRequest('post', url, {
       body: body,
-      contentType: "application/json",
-      responseKind: "json"
-    })
-    
+      contentType: 'application/json',
+      responseKind: 'json',
+    });
+
     // 成功時も失敗時もFetchRequestがJSONをパースしてくれる
-    const response = await request.perform()
-    let data = {}
-    
+    const response = await request.perform();
+    let data = {};
+
     try {
-      data = await response.json
-    } catch (e) {
+      data = await response.json;
+    } catch (_e) {
       // JSONパースエラー時は空オブジェクトとして扱う
     }
 
     if (response.ok) {
-      return data
+      return data;
     } else {
-      throw new Error(data.message || "Request failed")
+      throw new Error(data.message || 'Request failed');
     }
   },
 
   async delete(url) {
-    const request = new FetchRequest("delete", url, {
-      contentType: "application/json",
-      responseKind: "json"
-    })
-    
-    const response = await request.perform()
-    let data = {}
-    
+    const request = new FetchRequest('delete', url, {
+      contentType: 'application/json',
+      responseKind: 'json',
+    });
+
+    const response = await request.perform();
+    let data = {};
+
     try {
-      data = await response.json
-    } catch (e) {
+      data = await response.json;
+    } catch (_e) {
       // JSON parse error
     }
 
     if (response.ok) {
-      return data
+      return data;
     } else {
-      throw new Error(data.message || "Request failed")
+      throw new Error(data.message || 'Request failed');
     }
-  }
-}
+  },
+};

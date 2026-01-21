@@ -1,0 +1,16 @@
+{
+  "name": "celeano",
+  "private": true,
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-prettier": "latest",
+    "globals": "^17.0.0",
+    "prettier": "latest"
+  },
+  "scripts": {
+    "lint:js": "eslint \"app/javascript/**/*.{js,mjs,cjs}\"",
+    "lint:fix": "eslint \"app/javascript/**/*.{js,mjs,cjs}\" --fix && prettier --write \"app/javascript/**/*.{js,mjs,cjs}\""
+  }
+}
