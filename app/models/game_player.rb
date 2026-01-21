@@ -27,7 +27,7 @@ class GamePlayer < ApplicationRecord
 
   def deck
     if association(:game_cards).loaded?
-      game_cards.select(&:location_deck?).sort_by { |c| c.position_in_stack || 0 }
+      game_cards.select(&:location_deck?).sort_by { |c| c.position_in_stack.to_i }
     else
       game_cards.where(location: :deck).order(:position_in_stack)
     end
@@ -35,7 +35,7 @@ class GamePlayer < ApplicationRecord
 
   def hand
     if association(:game_cards).loaded?
-      game_cards.select(&:location_hand?).sort_by { |c| c.position_in_stack || 0 }
+      game_cards.select(&:location_hand?).sort_by { |c| c.position_in_stack.to_i }
     else
       game_cards.where(location: :hand).order(:position_in_stack)
     end
