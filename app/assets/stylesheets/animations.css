@@ -403,7 +403,7 @@
   .spell-cut-in-container.animate,
   .spell-cut-in-container.animate .spell-cut-in-content,
   .animate-target-glow::after,
-  .animate-buff,
+  .animate-buff .simple-frame,
   .animate-move-to-graveyard {
     animation-duration: 0.1s !important;
     animation-iteration-count: 1 !important;
