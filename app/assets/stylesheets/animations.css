@@ -395,7 +395,8 @@
   .animate-reveal,
   .animate-attack-up,
   .animate-attack-down,
-  .animate-damage,
+  .animate-damage .simple-frame,
+  .animate-reveal-flash .simple-frame,
   .animate-death,
   .animate-spell,
   .damage-number,
@@ -409,7 +410,7 @@
     transition-duration: 0.1s !important;
   }
   
-  .animate-damage {
+  .animate-damage .simple-frame {
     animation: none !important;
     background-color: rgba(255, 0, 0, 0.4) !important;
   }
