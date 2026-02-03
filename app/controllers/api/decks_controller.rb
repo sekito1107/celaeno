@@ -24,7 +24,7 @@ module Api
       params.require(:user).permit(:selected_deck)
     end
 
-    # セッション認証を強制（APIだがCookieベース）
+    # セッション認証を強制
     def authenticate_with_session!
       unless authenticated?
         render json: { error: "Unauthorized" }, status: :unauthorized
